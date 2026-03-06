@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="msapplication-tap-highlight" content="no" />
+
+  <!-- PWA -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="GlitchCraft" />
+  <meta name="theme-color" content="#060b18" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#eef2ff" media="(prefers-color-scheme: light)" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- SEO -->
+  <title>GlitchCraft — Neon Tetris Game</title>
+  <meta name="description"
+    content="GlitchCraft is a free neon Tetris game with smooth animations, haptic feedback, hold piece, combo system, dark/light theme, and full touch controls. Play online or install on your phone!" />
+  <meta name="keywords"
+    content="tetris, glitchcraft, neon tetris, free game, puzzle game, mobile game, block game, online game" />
+  <meta name="author" content="GlitchCraft" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph (social sharing preview) -->
+  <meta property="og:title" content="GlitchCraft — Neon Tetris Game" />
+  <meta property="og:description"
+    content="Play the most polished neon Tetris. Ghost piece, hold system, combos, haptics, and stunning visuals. Free to play!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-image.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GlitchCraft — Neon Tetris Game" />
+  <meta name="twitter:description" content="Free neon Tetris with combos, haptics, and stunning visuals. Play now!" />
+  <meta name="twitter:image" content="/og-image.png" />
+
+  <!-- Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" />
+
+  <!-- ════════════════════════════════════════════════════════
+         GOOGLE ADSENSE
+         ────────────────────────────────────────────────────────
+         STEP 1: Sign up free at https://adsense.google.com
+         STEP 2: After approval, replace YOUR_PUBLISHER_ID below
+                 with your real ID (looks like: ca-pub-1234567890123456)
+         STEP 3: Redeploy to Vercel — ads will start showing!
+    ════════════════════════════════════════════════════════ -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
+    crossorigin="anonymous"></script>
+
+  <style>
+    /* ── Critical inline CSS — eliminates FOUC completely ── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      background: #060b18;
+      overflow: hidden;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color-scheme: dark light;
+    }
+
+    #root {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* ── Subtle page-load fade-in ── */
+    #root {
+      animation: _rootFade 0.45s ease-out both;
+    }
+
+    @keyframes _rootFade {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "GlitchCraft Tetris",
+  "short_name": "GlitchCraft",
+  "description": "A beautifully crafted minimalist Tetris game with smooth animations, haptic feedback, combos, and stunning neon visuals.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "portrait-primary",
+  "background_color": "#060b18",
+  "theme_color": "#6366f1",
+  "lang": "en",
+  "categories": [
+    "games",
+    "entertainment"
+  ]
+}
