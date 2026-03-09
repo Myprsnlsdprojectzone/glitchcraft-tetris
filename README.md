@@ -1,4 +1,4 @@
-# Aesthetic Block Master 🧩✨
+# GlitchCraft 🧩✨
 
 A complete, premium, and fully-featured block puzzle game built with modern web technologies: React 19, TypeScript, and Vite. This codebase is ready to be instantly deployed, played, and monetized.
 
@@ -60,7 +60,7 @@ This project is exceptionally lightweight and pre-configured for free deployment
 Refer to `DEPLOY.md` for a step-by-step 2-minute guide on getting this game live on the internet! 
 
 ## ☁️ Setting Up Global Leaderboards
-Aesthetic Block Master comes pre-wired for Global Leaderboards via Supabase. 
+GlitchCraft comes pre-wired for Global Leaderboards via Supabase. 
 Refer to `SUPABASE_SCHEMA.md` for exact instructions on connecting your own free Supabase database in minutes.
 
 ## 💸 Monetization

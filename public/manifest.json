@@ -1,7 +1,7 @@
 {
-  "name": "Aesthetic Block Master",
-  "short_name": "Block Master",
-  "description": "A beautifully crafted minimalist Tetris game with smooth animations, haptic feedback, combos, and stunning neon visuals.",
+  "name": "GlitchCraft",
+  "short_name": "GlitchCraft",
+  "description": "GlitchCraft is a neon block puzzle game with glitchy visuals, combos, haptic feedback, and dark/light themes.",
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",

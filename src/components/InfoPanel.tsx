@@ -131,21 +131,19 @@ export const InfoPanel: React.FC<Props> = ({
         flexShrink: 0, marginBottom: 16,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 10,
-            background: "linear-gradient(135deg, #5a5fcf 0%, #6366f1 45%, #818cf8 70%, #22d3ee 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 15, flexShrink: 0,
-            boxShadow: "0 4px 16px rgba(99,102,241,0.52), inset 0 1px 0 rgba(255,255,255,0.24)",
-            animation: "logoGlow 3s ease-in-out infinite",
-          }}>🎮</div>
-          <span style={{
-            fontSize: 18, fontWeight: 900, letterSpacing: "-0.6px",
-            background: "linear-gradient(135deg, #6366f1 0%, #818cf8 45%, #22d3ee 100%)",
-            backgroundSize: "200% auto",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            animation: "titleShimmer 4s linear infinite",
-          }}>TETRIS</span>
+          <img
+            src="/logo.png"
+            alt="GlitchCraft"
+            draggable={false}
+            style={{
+              height: 34,
+              objectFit: "contain",
+              filter: "drop-shadow(0 0 10px rgba(99,102,241,0.65)) drop-shadow(0 0 4px rgba(34,211,238,0.4))",
+              animation: "logoGlow 3s ease-in-out infinite",
+              userSelect: "none",
+              WebkitUserSelect: "none",
+            }}
+          />
         </div>
         <button
           onClick={onToggleTheme}

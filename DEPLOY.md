@@ -1,4 +1,4 @@
-# 🚀 How to Deploy Aesthetic Block Master to the Internet (Free)
+# 🚀 How to Deploy GlitchCraft to the Internet (Free)
 
 ## What's Already Done For You ✅
 - PWA (installable on Android) — configured

@@ -1,6 +1,6 @@
 # Supabase Global Leaderboard Setup
 
-To activate the Global Leaderboard in Aesthetic Block Master, follow these steps to set up your free Supabase project.
+To activate the Global Leaderboard in GlitchCraft, follow these steps to set up your free Supabase project.
 
 ### 1. Create a Supabase Project
 1. Go to [Supabase](https://supabase.com) and create an account if you haven't already.
