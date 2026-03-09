@@ -1,5 +1,5 @@
 /**
- * achievements — GlitchCraft Tetris badge system
+ * achievements — Aesthetic Block Master badge system
  *
  * Defines 10 achievements and provides localStorage persistence helpers.
  * No React — pure data layer.
@@ -30,7 +30,7 @@ export const ACHIEVEMENT_LIST: AchievementDef[] = [
   { id: "no_hold",       emoji: "🚫", name: "Purist",          desc: "Finish a game without using Hold" },
 ];
 
-const STORAGE_KEY = "glitchcraft_achievements_v1";
+const STORAGE_KEY = "blockmaster_achievements_v1";
 
 /** Load unlocked record: { id: unlockedAtTimestamp } */
 export function loadAchievements(): Record<string, number> {

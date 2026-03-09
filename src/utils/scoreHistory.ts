@@ -1,12 +1,12 @@
 /**
- * scoreHistory — Local leaderboard persistence for GlitchCraft Tetris
+ * scoreHistory — Local leaderboard persistence for Aesthetic Block Master
  *
  * Pure utility module (no React). Stores the top-10 scores in localStorage.
  * Each entry records: score, lines cleared, level reached, and a human-readable
  * date + time string derived from the system clock at game-over time.
  */
 
-const STORAGE_KEY = "glitchcraft_scores";
+const STORAGE_KEY = "blockmaster_scores";
 const MAX_ENTRIES = 10;
 
 export interface ScoreEntry {

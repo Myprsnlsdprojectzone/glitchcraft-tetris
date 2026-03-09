@@ -65,7 +65,7 @@ export const DEFAULT_BINDINGS: KeyBindings = {
 export const BOARD_WIDTH  = 10;
 export const BOARD_HEIGHT = 20;
 
-const BEST_SCORE_KEY = "tetris_best_score";
+const BEST_SCORE_KEY = "blockmaster_best_score";
 
 const TETROMINOES: Record<TetrominoType, { shape: number[][]; color: string }> = {
   I: { shape: [[1, 1, 1, 1]],           color: "#22d3ee" },

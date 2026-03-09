@@ -1,4 +1,4 @@
-# 🚀 How to Deploy GlitchCraft to the Internet (Free)
+# 🚀 How to Deploy Aesthetic Block Master to the Internet (Free)
 
 ## What's Already Done For You ✅
 - PWA (installable on Android) — configured
@@ -15,7 +15,7 @@ Go to **[github.com](https://github.com)** → Sign Up (free)
 
 ## Step 2 — Create a New Repository on GitHub
 1. Click **"+"** (top right) → **"New repository"**
-2. **Repository name**: `glitchcraft-tetris`
+2. **Repository name**: `aesthetic-block-master`
 3. Keep it **Public**
 4. ❌ Do NOT check "Add README" or any other option
 5. Click **"Create repository"**
@@ -25,10 +25,10 @@ Go to **[github.com](https://github.com)** → Sign Up (free)
 ## Step 3 — Push Your Code to GitHub
 After creating the repo, GitHub shows you a page with commands.
 
-Copy the URL shown (looks like `https://github.com/YOUR-USERNAME/glitchcraft-tetris.git`), then run these commands in your terminal:
+Copy the URL shown (looks like `https://github.com/YOUR-USERNAME/aesthetic-block-master.git`), then run these commands in your terminal:
 
 ```
-git remote add origin https://github.com/YOUR-USERNAME/glitchcraft-tetris.git
+git remote add origin https://github.com/YOUR-USERNAME/aesthetic-block-master.git
 git branch -M main
 git push -u origin main
 ```
@@ -40,11 +40,11 @@ git push -u origin main
 ## Step 4 — Deploy on Vercel (Free)
 1. Go to **[vercel.com](https://vercel.com)** → Sign Up with GitHub
 2. Click **"Add New → Project"**
-3. Find `glitchcraft-tetris` → click **"Import"**
+3. Find `aesthetic-block-master` → click **"Import"**
 4. Click **"Deploy"** — no other settings needed
 5. Wait ~60 seconds → **your game is LIVE!** 🎉
 
-You get a free URL like: `https://glitchcraft-tetris.vercel.app`
+You get a free URL like: `https://aesthetic-block-master.vercel.app`
 
 ---
 

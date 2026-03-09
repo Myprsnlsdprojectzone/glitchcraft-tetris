@@ -1,5 +1,5 @@
 /**
- * useAudio — 8-bit chiptune sound engine for GlitchCraft Tetris
+ * useAudio — 8-bit chiptune sound engine for Aesthetic Block Master
  *
  * Uses the browser-native Web Audio API exclusively.
  * No npm dependencies. No audio files. Fully procedural.
@@ -8,10 +8,10 @@
  *  • Standalone exported functions — no React state required
  *  • AudioContext is created LAZILY on first call (satisfies browser autoplay policy)
  *  • All functions are silent no-ops when muted or when API is unavailable
- *  • Mute state persists via localStorage key "glitchcraft_audio"
+ *  • Mute state persists via localStorage key "blockmaster_audio"
  */
 
-const AUDIO_KEY = "glitchcraft_audio";
+const AUDIO_KEY = "blockmaster_audio";
 
 // ── Mute state ─────────────────────────────────────────────────────────────────
 // Initialised synchronously from localStorage so the first sound call is correct.

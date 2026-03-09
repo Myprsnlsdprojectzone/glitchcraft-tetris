@@ -123,14 +123,14 @@ interface UICallbacks {
 export default function App() {
   /* ── Theme ── */
   const [themeId, setThemeId] = useState<string>(
-    () => localStorage.getItem("glitchcraft_theme") ?? "neon"
+    () => localStorage.getItem("blockmaster_theme") ?? "neon"
   );
   const theme = THEMES[themeId] ?? THEMES.neon;
 
   const handleCycleTheme = useCallback(() => {
     setThemeId(prev => {
       const next = nextThemeId(prev);
-      localStorage.setItem("glitchcraft_theme", next);
+      localStorage.setItem("blockmaster_theme", next);
       return next;
     });
   }, []);
@@ -139,14 +139,14 @@ export default function App() {
   const [showGuide, setShowGuide] = useState(false);
   const [bindings, setBindings] = useState<KeyBindings>({ ...DEFAULT_BINDINGS });
   const [audioMuted, setAudioMuted] = useState<boolean>(
-    () => localStorage.getItem("glitchcraft_audio") === "off"
+    () => localStorage.getItem("blockmaster_audio") === "off"
   );
 
   const handleToggleAudio = useCallback(() => {
     setAudioMuted(m => {
       const next = !m;
       setAudioEnabled(!next);
-      localStorage.setItem("glitchcraft_audio", next ? "off" : "on");
+      localStorage.setItem("blockmaster_audio", next ? "off" : "on");
       return next;
     });
   }, []);

@@ -9,7 +9,7 @@ Google AdSense shows ads on your website. When visitors see or click the ads, **
 
 1. Go to **[adsense.google.com](https://adsense.google.com)**
 2. Sign in with your **Google account**
-3. Enter your website URL: `https://glitchcraft-tetris.vercel.app` (from Step 5 in DEPLOY.md)
+3. Enter your website URL: `https://aesthetic-block-master.vercel.app` (from Step 5 in DEPLOY.md)
 4. Fill in your country and payment details (your bank for receiving money)
 5. Click **"Start using AdSense"**
 
@@ -28,17 +28,14 @@ After approval:
 
 ## Step 3 — Add Your Publisher ID to the Game
 
-1. Open the file: `index.html` in your project folder
-2. Find this line:
+1. Find the `.env.example` file in your project folder.
+2. Rename it to `.env` (or add it directly in your Vercel project environment variables).
+3. Open the file and replace `ca-pub-your_adsense_id_here` with your real ID:
+   ```env
+   VITE_ADSENSE_ID=ca-pub-1234567890123456
    ```
-   src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
-   ```
-3. Replace `YOUR_PUBLISHER_ID` with your real ID, e.g.:
-   ```
-   src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
-   ```
-4. Save the file
-5. Push to GitHub → Vercel redeploys automatically
+4. Save the file.
+5. Push to GitHub → Vercel redeploys automatically using your newly provided Variable.
 6. **Ads will start appearing in your game!** 🎉
 
 ---
