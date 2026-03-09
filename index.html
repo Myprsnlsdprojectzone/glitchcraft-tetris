@@ -48,6 +48,20 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=%VITE_ADSENSE_ID%"
     crossorigin="anonymous"></script>
 
+  <!-- Google Analytics 4 — Measurement ID configured via VITE_GA_ID env variable -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '%VITE_GA_ID%', {
+      page_path: window.location.pathname,
+      anonymize_ip: true,
+      cookie_flags: 'SameSite=None;Secure'
+    });
+  </script>
+
+
   <style>
     /* ── Critical inline CSS — eliminates FOUC completely ── */
     *,
