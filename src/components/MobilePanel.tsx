@@ -65,13 +65,22 @@ export const MobilePanel: React.FC<Props> = ({
     label: string; icon: string; onClick: () => void;
     big?: boolean; accent?: string; haptic?: () => void;
   }) => (
-    <button
+    <div
       onPointerDown={e => { e.preventDefault(); haptic?.(); onClick(); }}
-      className="dpad-btn"
       style={{
-        width: big ? 58 : 50, height: big ? 58 : 50,
-        borderRadius: big ? 17 : 13,
-        background: btnAccent
+        padding: 12, margin: -12,
+        touchAction: "manipulation", userSelect: "none",
+        WebkitUserSelect: "none", WebkitTapHighlightColor: "transparent",
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        zIndex: 10, cursor: "pointer",
+      }}
+    >
+      <button
+        className="dpad-btn"
+        style={{
+          width: big ? 58 : 50, height: big ? 58 : 50,
+          borderRadius: big ? 17 : 13,
+          background: btnAccent
           ? `linear-gradient(145deg, ${btnAccent}28, ${btnAccent}14)`
           : isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.055)",
         border: `1.5px solid ${btnAccent ? `${btnAccent}50` : border}`,
@@ -87,6 +96,7 @@ export const MobilePanel: React.FC<Props> = ({
         touchAction: "none", userSelect: "none",
         WebkitUserSelect: "none",
         WebkitTapHighlightColor: "transparent",
+        pointerEvents: "none", // Let the wrapper handle touch
         cursor: "pointer", lineHeight: 1,
         position: "relative", overflow: "hidden",
       }}
@@ -107,6 +117,7 @@ export const MobilePanel: React.FC<Props> = ({
         position: "relative",
       }}>{label}</span>
     </button>
+   </div>
   );
 
   /* ── Small action button ── */
@@ -116,13 +127,23 @@ export const MobilePanel: React.FC<Props> = ({
     icon: string; label: string; onClick: () => void;
     accent?: string; disabled?: boolean; warning?: boolean;
   }) => (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="mobile-action-btn"
+    <div
+      onClick={disabled ? undefined : onClick}
       style={{
-        width: 50, height: 50, borderRadius: 14,
-        background: btnAccent
+        padding: 12, margin: -12,
+        touchAction: "manipulation", userSelect: "none",
+        WebkitUserSelect: "none", WebkitTapHighlightColor: "transparent",
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        zIndex: 10, cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.38 : 1,
+      }}
+    >
+      <button
+        disabled={disabled}
+        className="mobile-action-btn"
+        style={{
+          width: 50, height: 50, borderRadius: 14,
+          background: btnAccent
           ? `linear-gradient(145deg, ${btnAccent}28, ${btnAccent}14)`
           : warning
             ? "rgba(248,113,113,0.08)"
@@ -132,8 +153,7 @@ export const MobilePanel: React.FC<Props> = ({
         fontFamily: "inherit",
         display: "flex", alignItems: "center", justifyContent: "center",
         flexDirection: "column", gap: 1,
-        opacity: disabled ? 0.38 : 1,
-        touchAction: "none", cursor: disabled ? "not-allowed" : "pointer",
+        touchAction: "none", pointerEvents: "none",
         WebkitTapHighlightColor: "transparent",
         boxShadow: btnAccent
           ? `0 4px 16px ${btnAccent}28, inset 0 1px 0 rgba(255,255,255,0.1)`
@@ -156,6 +176,7 @@ export const MobilePanel: React.FC<Props> = ({
         textTransform: "uppercase", lineHeight: 1, marginTop: 1, position: "relative",
       }}>{label}</span>
     </button>
+   </div>
   );
 
   return (

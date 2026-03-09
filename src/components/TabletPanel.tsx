@@ -78,9 +78,18 @@ export const TabletPanel: React.FC<Props> = ({
   }) => {
     const w = big ? dpadBigSize : dpadSize;
     return (
-      <button
+      <div
         onPointerDown={e => { e.preventDefault(); haptic?.(); onClick(); }}
-        className="dpad-btn"
+        style={{
+          padding: 12, margin: -12,
+          touchAction: "manipulation", userSelect: "none",
+          WebkitUserSelect: "none", WebkitTapHighlightColor: "transparent",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          zIndex: 10, cursor: "pointer",
+        }}
+      >
+        <button
+          className="dpad-btn"
         style={{
           width: w, height: w,
           borderRadius: big ? 22 : 18,
@@ -97,8 +106,7 @@ export const TabletPanel: React.FC<Props> = ({
             : isDark
               ? "0 4px 14px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.22)"
               : "0 3px 10px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.95)",
-          touchAction: "none", userSelect: "none",
-          WebkitUserSelect: "none", WebkitTapHighlightColor: "transparent",
+          pointerEvents: "none", // Let the wrapper handle touch
           cursor: "pointer", lineHeight: 1,
           position: "relative", overflow: "hidden",
         }}
@@ -117,6 +125,7 @@ export const TabletPanel: React.FC<Props> = ({
           textTransform: "uppercase", lineHeight: 1, marginTop: 2, position: "relative",
         }}>{label}</span>
       </button>
+     </div>
     );
   };
 
@@ -127,10 +136,20 @@ export const TabletPanel: React.FC<Props> = ({
     icon: string; label: string; onClick: () => void;
     accentColor?: string; disabled?: boolean; size?: number;
   }) => (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className="mobile-action-btn"
+    <div
+      onClick={disabled ? undefined : onClick}
+      style={{
+        padding: 12, margin: -12,
+        touchAction: "manipulation", userSelect: "none",
+        WebkitUserSelect: "none", WebkitTapHighlightColor: "transparent",
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        zIndex: 10, cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.38 : 1,
+      }}
+    >
+      <button
+        disabled={disabled}
+        className="mobile-action-btn"
       style={{
         width: size, height: size, borderRadius: Math.round(size * 0.28),
         background: accentColor
@@ -140,8 +159,7 @@ export const TabletPanel: React.FC<Props> = ({
         color: accentColor ? accentColor : sub, fontFamily: "inherit",
         display: "flex", alignItems: "center", justifyContent: "center",
         flexDirection: "column", gap: 2,
-        opacity: disabled ? 0.38 : 1,
-        touchAction: "none", cursor: disabled ? "not-allowed" : "pointer",
+        touchAction: "none", pointerEvents: "none",
         WebkitTapHighlightColor: "transparent",
         boxShadow: accentColor
           ? `0 5px 20px ${accentColor}30, inset 0 1px 0 rgba(255,255,255,0.12)`
@@ -159,11 +177,12 @@ export const TabletPanel: React.FC<Props> = ({
       }} />
       <span style={{ fontSize: size * 0.36, position: "relative" }}>{icon}</span>
       <span style={{
-        fontSize: labelFontSz, fontWeight: 800, letterSpacing: "0.05em",
-        color: accentColor ? `${accentColor}bb` : sub,
-        textTransform: "uppercase", lineHeight: 1, marginTop: 1, position: "relative",
+        fontSize: size * 0.14, fontWeight: 800, letterSpacing: "0.05em",
+        color: accentColor ? `${accentColor}cc` : sub,
+        textTransform: "uppercase", lineHeight: 1, marginTop: 2, position: "relative",
       }}>{label}</span>
     </button>
+  </div>
   );
 
   /* ── Stat card ── */
