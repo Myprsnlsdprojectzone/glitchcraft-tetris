@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { KeyBindings } from "../hooks/useTetris";
 
@@ -39,6 +39,17 @@ function lightenHex(hex: string, amount: number): string {
 
 function ManualGuideInner({ onClose, isDark, bindings }: Props) {
   const [active, setActive] = useState<Section>("about");
+
+  /* ── Responsive breakpoints ── */
+  const [vw, setVw] = useState(window.innerWidth);
+  useEffect(() => {
+    const onResize = () => setVw(window.innerWidth);
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const isMobile = vw < 600;      // phone – full-width, tab bar
+  const isTablet = vw < 900;      // tablet – narrower sidebar
+
 
   /* ── Theme tokens ── */
   const bg         = isDark ? "rgba(6,11,22,0.99)"  : "rgba(252,254,255,0.99)";
@@ -543,21 +554,22 @@ function ManualGuideInner({ onClose, isDark, bindings }: Props) {
     <div
       style={{
         position: "fixed", inset: 0, zIndex: 99999,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        background: "rgba(0,0,0,0.86)",
+        display: "flex", alignItems: isMobile ? "flex-end" : "center",
+        justifyContent: "center",
+        background: isMobile ? "rgba(0,0,0,0.75)" : "rgba(0,0,0,0.86)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        padding: "14px",
+        padding: isMobile ? "0" : "14px",
         fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
       }}
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div style={{
-        width: "min(940px, 97vw)",
-        height: "min(740px, 95vh)",
+        width: isMobile ? "100vw" : `min(940px, 97vw)`,
+        height: isMobile ? "92svh" : `min(740px, 95vh)`,
         background: bg,
         border: `1.5px solid ${border}`,
-        borderRadius: 26,
+        borderRadius: isMobile ? "22px 22px 0 0" : 26,
         display: "flex", flexDirection: "column",
         overflow: "hidden",
         boxShadow: [
@@ -565,7 +577,9 @@ function ManualGuideInner({ onClose, isDark, bindings }: Props) {
           "0 0 0 1px rgba(255,255,255,0.04)",
           "0 0 80px rgba(99,102,241,0.08)",
         ].join(", "),
-        animation: "modalOpen 0.35s cubic-bezier(0.34,1.08,0.64,1) both",
+        animation: isMobile
+          ? "slideUp 0.35s cubic-bezier(0.34,1.08,0.64,1) both"
+          : "modalOpen 0.35s cubic-bezier(0.34,1.08,0.64,1) both",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
       }}>
@@ -573,33 +587,45 @@ function ManualGuideInner({ onClose, isDark, bindings }: Props) {
         {/* ── HEADER ── */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "18px 28px",
+          padding: isMobile ? "13px 16px" : "18px 28px",
           borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.055)" : "rgba(0,0,0,0.07)"}`,
           background: panel, flexShrink: 0,
           boxShadow: isDark
             ? "0 1px 0 rgba(255,255,255,0.03), inset 0 -1px 0 rgba(0,0,0,0.15)"
             : "0 1px 0 rgba(0,0,0,0.06)",
         }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+          {/* Mobile: drag handle */}
+          {isMobile && (
             <div style={{
-              width: 50, height: 50, borderRadius: 15,
+              position: "absolute", top: 7, left: "50%", transform: "translateX(-50%)",
+              width: 36, height: 4, borderRadius: 4,
+              background: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.15)",
+            }} />
+          )}
+          <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 11 : 15 }}>
+            <div style={{
+              width: isMobile ? 38 : 50,
+              height: isMobile ? 38 : 50,
+              borderRadius: isMobile ? 11 : 15,
               background: "linear-gradient(135deg, #5a5fcf 0%, #6366f1 45%, #818cf8 70%, #22d3ee 100%)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 24, flexShrink: 0,
+              fontSize: isMobile ? 18 : 24, flexShrink: 0,
               boxShadow: "0 8px 28px rgba(99,102,241,0.6), inset 0 1px 0 rgba(255,255,255,0.22)",
               animation: "logoGlow 3s ease-in-out infinite",
             }}>📖</div>
             <div>
               <div style={{
-                fontSize: 21, fontWeight: 900, letterSpacing: "-0.6px",
+                fontSize: isMobile ? 16 : 21, fontWeight: 900, letterSpacing: "-0.6px",
                 background: "linear-gradient(135deg, #6366f1 0%, #818cf8 45%, #22d3ee 100%)",
                 backgroundSize: "200% auto",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
                 animation: "titleShimmer 4s linear infinite",
               }}>Player's Manual</div>
-              <div style={{ fontSize: 12.5, color: sub, marginTop: 3, fontWeight: 500 }}>
-                Complete guide to mastering Tetris
-              </div>
+              {!isMobile && (
+                <div style={{ fontSize: 12.5, color: sub, marginTop: 3, fontWeight: 500 }}>
+                  Complete guide to mastering GlitchCraft
+                </div>
+              )}
             </div>
           </div>
           <button
@@ -608,8 +634,10 @@ function ManualGuideInner({ onClose, isDark, bindings }: Props) {
             style={{
               background: isDark ? "rgba(12,22,40,0.92)" : "#eaeff8",
               border: `1.5px solid ${border}`,
-              borderRadius: 12, width: 40, height: 40,
-              color: sub, fontSize: 16,
+              borderRadius: 12,
+              width: isMobile ? 36 : 40,
+              height: isMobile ? 36 : 40,
+              color: sub, fontSize: isMobile ? 14 : 16,
               display: "flex", alignItems: "center", justifyContent: "center",
               flexShrink: 0, cursor: "pointer",
               boxShadow: isDark ? "0 2px 10px rgba(0,0,0,0.35)" : "0 2px 8px rgba(0,0,0,0.08)",
@@ -618,95 +646,171 @@ function ManualGuideInner({ onClose, isDark, bindings }: Props) {
         </div>
 
         {/* ── BODY ── */}
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        {isMobile ? (
+          /* ══ MOBILE: vertical column — tab bar + scrollable content ══ */
+          <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
 
-          {/* Sidebar */}
-          <div style={{
-            width: 210, flexShrink: 0,
-            background: panel,
-            borderRight: `1px solid ${isDark ? "rgba(255,255,255,0.045)" : "rgba(0,0,0,0.06)"}`,
-            padding: "14px 10px",
-            display: "flex", flexDirection: "column",
-            gap: 3, overflowY: "auto",
-          }}>
-            {SECTIONS.map(({ id, icon, label, color }) => {
-              const isActive = active === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => setActive(id)}
-                  className="guide-sidebar-item"
-                  style={{
-                    display: "flex", alignItems: "center", gap: 11,
-                    padding: "11px 13px",
-                    background: isActive ? `${color}1a` : "transparent",
-                    border: `1.5px solid ${isActive ? color + "40" : "transparent"}`,
-                    borderRadius: 13, cursor: "pointer",
-                    textAlign: "left" as const,
-                    color: isActive ? color : sub,
-                    fontSize: 13.5, fontWeight: isActive ? 700 : 500,
-                    fontFamily: "inherit", letterSpacing: "0.01em",
-                    boxShadow: isActive ? `0 3px 14px ${color}1a` : "none",
-                    position: "relative", overflow: "hidden",
-                  }}
-                >
-                  {isActive && (
+            {/* Horizontal scrollable tab bar */}
+            <div style={{
+              display: "flex", gap: 5,
+              padding: "10px 12px",
+              overflowX: "auto", flexShrink: 0,
+              background: panel,
+              borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.07)"}`,
+              scrollbarWidth: "none",
+            }}>
+              {SECTIONS.map(({ id, icon, label, color }) => {
+                const isActive = active === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setActive(id)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 7,
+                      padding: "8px 13px", flexShrink: 0,
+                      background: isActive ? `${color}22` : isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)",
+                      border: `1.5px solid ${isActive ? color + "50" : border}`,
+                      borderRadius: 22, cursor: "pointer",
+                      color: isActive ? color : sub,
+                      fontSize: 12.5, fontWeight: isActive ? 700 : 500,
+                      fontFamily: "inherit",
+                      whiteSpace: "nowrap",
+                      boxShadow: isActive ? `0 3px 12px ${color}28` : "none",
+                      touchAction: "manipulation",
+                    }}
+                  >
+                    <span style={{ fontSize: 15 }}>{icon}</span>
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Scrollable content */}
+            <div style={{
+              flex: 1, overflowY: "auto",
+              padding: "18px 16px 24px",
+              background: bg,
+            }}>
+              {renderContent()}
+            </div>
+
+            {/* Bottom floating close pill */}
+            <div style={{
+              padding: "12px 16px",
+              background: panel,
+              borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.07)"}`,
+              flexShrink: 0,
+            }}>
+              <button
+                onClick={onClose}
+                style={{
+                  width: "100%", padding: "13px",
+                  background: `linear-gradient(135deg, ${activeSection.color} 0%, ${lightenHex(activeSection.color, 0.18)} 100%)`,
+                  border: "none", borderRadius: 14,
+                  color: "#fff", fontSize: 14.5, fontWeight: 700,
+                  cursor: "pointer", fontFamily: "inherit",
+                  letterSpacing: "0.02em",
+                  boxShadow: `0 6px 22px ${activeSection.color}55, inset 0 1px 0 rgba(255,255,255,0.2)`,
+                  touchAction: "manipulation",
+                }}
+              >✓&nbsp; Got It!</button>
+            </div>
+          </div>
+        ) : (
+          /* ══ TABLET / DESKTOP: sidebar + content ══ */
+          <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+
+            {/* Sidebar */}
+            <div style={{
+              width: isTablet ? 170 : 210, flexShrink: 0,
+              background: panel,
+              borderRight: `1px solid ${isDark ? "rgba(255,255,255,0.045)" : "rgba(0,0,0,0.06)"}`,
+              padding: isTablet ? "10px 7px" : "14px 10px",
+              display: "flex", flexDirection: "column",
+              gap: 3, overflowY: "auto",
+            }}>
+              {SECTIONS.map(({ id, icon, label, color }) => {
+                const isActive = active === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setActive(id)}
+                    className="guide-sidebar-item"
+                    style={{
+                      display: "flex", alignItems: "center", gap: isTablet ? 8 : 11,
+                      padding: isTablet ? "9px 10px" : "11px 13px",
+                      background: isActive ? `${color}1a` : "transparent",
+                      border: `1.5px solid ${isActive ? color + "40" : "transparent"}`,
+                      borderRadius: 13, cursor: "pointer",
+                      textAlign: "left" as const,
+                      color: isActive ? color : sub,
+                      fontSize: isTablet ? 12.5 : 13.5,
+                      fontWeight: isActive ? 700 : 500,
+                      fontFamily: "inherit", letterSpacing: "0.01em",
+                      boxShadow: isActive ? `0 3px 14px ${color}1a` : "none",
+                      position: "relative", overflow: "hidden",
+                    }}
+                  >
+                    {isActive && (
+                      <div style={{
+                        position: "absolute", inset: 0,
+                        background: `linear-gradient(135deg, ${color}08 0%, transparent 60%)`,
+                        pointerEvents: "none",
+                      }} />
+                    )}
                     <div style={{
-                      position: "absolute", inset: 0,
-                      background: `linear-gradient(135deg, ${color}08 0%, transparent 60%)`,
-                      pointerEvents: "none",
-                    }} />
-                  )}
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                    background: isActive ? `${color}22` : isDark ? "rgba(14,26,46,0.9)" : "#e8eef8",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 17, transition: "all 0.18s",
-                    border: `1.5px solid ${isActive ? color + "3c" : border}`,
-                    boxShadow: isActive ? `0 0 14px ${color}22` : "none",
-                    position: "relative",
-                  }}>{icon}</div>
-                  <span style={{ position: "relative" }}>{label}</span>
-                  {isActive && (
-                    <div style={{
-                      marginLeft: "auto", width: 7, height: 7,
-                      borderRadius: "50%", background: color, flexShrink: 0,
-                      boxShadow: `0 0 10px ${color}, 0 0 20px ${color}44`,
+                      width: isTablet ? 30 : 36, height: isTablet ? 30 : 36,
+                      borderRadius: 10, flexShrink: 0,
+                      background: isActive ? `${color}22` : isDark ? "rgba(14,26,46,0.9)" : "#e8eef8",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: isTablet ? 14 : 17, transition: "all 0.18s",
+                      border: `1.5px solid ${isActive ? color + "3c" : border}`,
+                      boxShadow: isActive ? `0 0 14px ${color}22` : "none",
                       position: "relative",
-                    }} />
-                  )}
-                </button>
-              );
-            })}
+                    }}>{icon}</div>
+                    <span style={{ position: "relative" }}>{label}</span>
+                    {isActive && (
+                      <div style={{
+                        marginLeft: "auto", width: 7, height: 7,
+                        borderRadius: "50%", background: color, flexShrink: 0,
+                        boxShadow: `0 0 10px ${color}, 0 0 20px ${color}44`,
+                        position: "relative",
+                      }} />
+                    )}
+                  </button>
+                );
+              })}
 
-            <div style={{ flex: 1, minHeight: 18 }} />
+              <div style={{ flex: 1, minHeight: 18 }} />
 
-            {/* Got It! button */}
-            <button
-              onClick={onClose}
-              className="modal-footer-btn"
-              style={{
-                padding: "12px",
-                background: `linear-gradient(135deg, ${activeSection.color} 0%, ${lightenHex(activeSection.color, 0.18)} 100%)`,
-                border: "none", borderRadius: 13,
-                color: "#fff", fontSize: 13.5, fontWeight: 700,
-                cursor: "pointer", fontFamily: "inherit",
-                letterSpacing: "0.02em",
-                boxShadow: `0 6px 22px ${activeSection.color}55, inset 0 1px 0 rgba(255,255,255,0.2)`,
-                transition: "background 0.3s ease, box-shadow 0.3s ease",
-              }}
-            >✓&nbsp; Got It!</button>
+              {/* Got It! button */}
+              <button
+                onClick={onClose}
+                className="modal-footer-btn"
+                style={{
+                  padding: isTablet ? "11px" : "12px",
+                  background: `linear-gradient(135deg, ${activeSection.color} 0%, ${lightenHex(activeSection.color, 0.18)} 100%)`,
+                  border: "none", borderRadius: 13,
+                  color: "#fff", fontSize: isTablet ? 12.5 : 13.5, fontWeight: 700,
+                  cursor: "pointer", fontFamily: "inherit",
+                  letterSpacing: "0.02em",
+                  boxShadow: `0 6px 22px ${activeSection.color}55, inset 0 1px 0 rgba(255,255,255,0.2)`,
+                  transition: "background 0.3s ease, box-shadow 0.3s ease",
+                }}
+              >✓&nbsp; Got It!</button>
+            </div>
+
+            {/* Scrollable content */}
+            <div style={{
+              flex: 1, overflowY: "auto",
+              padding: isTablet ? "20px 22px" : "28px 32px",
+              background: bg,
+            }}>
+              {renderContent()}
+            </div>
           </div>
-
-          {/* Scrollable content */}
-          <div style={{
-            flex: 1, overflowY: "auto",
-            padding: "28px 32px",
-            background: bg,
-          }}>
-            {renderContent()}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
