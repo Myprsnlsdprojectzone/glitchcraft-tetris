@@ -25,12 +25,14 @@ interface Props {
   orientation: "portrait" | "landscape";
   bindings?:  KeyBindings;
   audioMuted:     boolean;
+  bgmMuted:       boolean;
   onStart:        () => void;
   onTogglePause:  () => void;
   onOpenControls: () => void;
   onOpenGuide:    () => void;
   onToggleTheme:  () => void;
   onToggleAudio:  () => void;
+  onToggleBgm:    () => void;
   onMoveLeft:  () => void;
   onMoveRight: () => void;
   onRotate:    () => void;
@@ -44,8 +46,8 @@ export const TabletPanel: React.FC<Props> = ({
   next, hold, holdLocked,
   running, started, gameOver,
   theme, panelH, orientation, bindings,
-  audioMuted,
-  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme, onToggleAudio,
+  audioMuted, bgmMuted,
+  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme, onToggleAudio, onToggleBgm,
   onMoveLeft, onMoveRight, onRotate, onHardDrop, onHold, onSoftDrop,
 }) => {
   const isPortrait = orientation === "portrait";
@@ -231,6 +233,13 @@ export const TabletPanel: React.FC<Props> = ({
             fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: isDark ? "0 2px 10px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.08)",
           }}>{audioMuted ? "🔇" : "🔊"}</button>
+          {/* BGM toggle */}
+          <button onClick={onToggleBgm} aria-label={bgmMuted ? "Unmute Music" : "Mute Music"} className="theme-toggle-btn" style={{
+            width: 44, height: 44, borderRadius: 12, flexShrink: 0, alignSelf: "center",
+            background: card, border: `2px solid ${border}`,
+            fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: isDark ? "0 2px 10px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.08)",
+          }}>{bgmMuted ? "🎵" : "🎶"}</button>
         </div>
 
         {/* Controls row */}
@@ -363,7 +372,14 @@ export const TabletPanel: React.FC<Props> = ({
           borderRadius: 9, width: 34, height: 34,
           fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
           boxShadow: isDark ? "0 2px 8px rgba(0,0,0,0.4)" : "0 2px 8px rgba(0,0,0,0.07)",
-        }}>{audioMuted ? "🔇" : "🔊"}</button>
+        }}><span style={{ position: "relative", top: 1 }}>{audioMuted ? "🔇" : "🔊"}</span></button>
+        <button onClick={onToggleBgm} aria-label={bgmMuted ? "Unmute Music" : "Mute Music"} className="theme-toggle-btn" style={{
+          background: "transparent", border: "none", width: 42, height: 42,
+          fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
+          color: text, cursor: "pointer", marginLeft: 4,
+        }}>
+          <span style={{ position: "relative", top: 1 }}>{bgmMuted ? "🎵" : "🎶"}</span>
+        </button>
       </div>
 
       {/* Score */}

@@ -25,13 +25,14 @@ interface Props {
   theme:      ThemeConfig;
   panelH:     number;
   audioMuted:     boolean;
+  bgmMuted:       boolean;
   scores:         ScoreEntry[];
   onStart:        () => void;
   onTogglePause:  () => void;
-  onOpenControls: () => void;
   onOpenGuide:    () => void;
   onToggleTheme:  () => void;
   onToggleAudio:  () => void;
+  onToggleBgm:    () => void;
   onMoveLeft:  () => void;
   onMoveRight: () => void;
   onRotate:    () => void;
@@ -45,8 +46,8 @@ export const MobilePanel: React.FC<Props> = ({
   next, hold, holdLocked,
   running, started, gameOver,
   theme, panelH,
-  audioMuted, scores,
-  onStart, onTogglePause, onOpenGuide, onToggleTheme, onToggleAudio,
+  audioMuted, bgmMuted, scores,
+  onStart, onTogglePause, onOpenGuide, onToggleTheme, onToggleAudio, onToggleBgm,
   onMoveLeft, onMoveRight, onRotate, onHardDrop, onHold, onSoftDrop,
 }) => {
   const { bg, card, border, text, sub, accent, accent2: cyan, gold, isDark } = theme;
@@ -224,7 +225,19 @@ export const MobilePanel: React.FC<Props> = ({
               ? "0 2px 8px rgba(0,0,0,0.3)"
               : "0 1px 6px rgba(0,0,0,0.08)",
           }}
-        >{audioMuted ? "🔇" : "🔊"}</button>
+        ><span style={{ position: "relative", top: 1 }}>{audioMuted ? "🔇" : "🔊"}</span></button>
+
+        <button
+          onClick={onToggleBgm}
+          aria-label={bgmMuted ? "Unmute Music" : "Mute Music"}
+          className="theme-toggle-btn"
+          style={{
+            background: "transparent", border: "none",
+            width: 44, height: 44, fontSize: 18,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", marginLeft: 8,
+          }}
+        ><span style={{ position: "relative", top: 1 }}>{bgmMuted ? "🎵" : "🎶"}</span></button>
       </div>
 
       {/* ── Top-3 compact leaderboard ── */}

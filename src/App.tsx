@@ -4,7 +4,9 @@ import { useTetris, KeyBindings, DEFAULT_BINDINGS, Tetromino } from "./hooks/use
 import { useViewportScale } from "./hooks/useViewportScale";
 import { useTouchControls } from "./hooks/useTouchControls";
 import { setAudioEnabled } from "./hooks/useAudio";
+import { isBgmEnabled, toggleBGM, startBGM, stopBGM } from "./hooks/useBGM";
 import { getScores, addScore, ScoreEntry } from "./utils/scoreHistory";
+import { submitGlobalScore } from "./utils/globalLeaderboard";
 import { THEMES, nextThemeId, ThemeConfig } from "./utils/themes";
 import { useAchievements } from "./hooks/useAchievements";
 import { AchievementToast } from "./components/AchievementToast";
@@ -151,6 +153,13 @@ export default function App() {
     });
   }, []);
 
+  const [bgmMuted, setBgmMuted] = useState<boolean>(!isBgmEnabled());
+
+  const handleToggleBgm = useCallback(() => {
+    const isNowPlaying = toggleBGM();
+    setBgmMuted(!isNowPlaying);
+  }, []);
+
   const { scale, isMobile, isTablet, layoutMode, vw, vh } =
     useViewportScale(NATURAL_W, NATURAL_H, 12);
 
@@ -168,9 +177,23 @@ export default function App() {
     // Fires exactly once when a started game transitions to game-over
     if (gs.started && gs.gameOver && !prevGameOver.current) {
       setScores(addScore(gs.score, gs.lines, gs.level));
+      submitGlobalScore(gs.score, gs.lines, gs.level);
     }
     prevGameOver.current = gs.gameOver;
   }, [gs.gameOver, gs.started, gs.score, gs.lines, gs.level]);
+
+  useEffect(() => {
+    // Start BGM automatically when the user starts playing if not muted
+    if (!bgmMuted) {
+      if (gs.started && !gs.gameOver && gs.running) {
+        startBGM();
+      } else if (!gs.running) {
+        stopBGM(); // Stop playing if paused or game over
+      }
+    } else {
+      stopBGM();
+    }
+  }, [gs.started, gs.gameOver, gs.running, bgmMuted]);
 
   const boardRef = useRef<HTMLDivElement>(null);
   useTouchControls(boardRef as React.RefObject<HTMLElement | null>, {
@@ -247,9 +270,10 @@ export default function App() {
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
               theme={theme} panelH={mobilePanelH}
               audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
+              bgmMuted={bgmMuted} onToggleBgm={handleToggleBgm}
               scores={scores}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
-              onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
+              onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
               onMoveLeft={gs.moveLeft} onMoveRight={gs.moveRight}
               onRotate={gs.rotatePiece} onHardDrop={gs.hardDrop}
@@ -281,6 +305,7 @@ export default function App() {
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
               theme={theme} panelH={tabletPPanelH} orientation="portrait"
               audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
+              bgmMuted={bgmMuted} onToggleBgm={handleToggleBgm}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
@@ -317,6 +342,7 @@ export default function App() {
               theme={theme} panelH={tabletLCell * 20} orientation="landscape"
               bindings={bindings}
               audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
+              bgmMuted={bgmMuted} onToggleBgm={handleToggleBgm}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
@@ -353,6 +379,7 @@ export default function App() {
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
               theme={theme} bindings={bindings} panelH={NATURAL_H}
               audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
+              bgmMuted={bgmMuted} onToggleBgm={handleToggleBgm}
               scores={scores} achievements={achievements}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}

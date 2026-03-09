@@ -23,6 +23,7 @@ interface Props {
   bindings:   KeyBindings;
   panelH:     number;
   audioMuted:     boolean;
+  bgmMuted:       boolean;
   scores:         ScoreEntry[];
   achievements:   AchievementState[];
   onStart:        () => void;
@@ -31,6 +32,7 @@ interface Props {
   onOpenGuide:    () => void;
   onToggleTheme:  () => void;
   onToggleAudio:  () => void;
+  onToggleBgm:    () => void;
 }
 
 export const InfoPanel: React.FC<Props> = ({
@@ -38,8 +40,8 @@ export const InfoPanel: React.FC<Props> = ({
   next, hold, holdLocked,
   running, started, gameOver,
   theme, bindings, panelH,
-  audioMuted, scores, achievements,
-  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme, onToggleAudio,
+  audioMuted, bgmMuted, scores, achievements,
+  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme, onToggleAudio, onToggleBgm,
 }) => {
   /* ── Theme tokens ── */
   const { bg, card, card2, border, text, sub, accent, accent2, gold, isDark } = theme;
@@ -175,6 +177,21 @@ export const InfoPanel: React.FC<Props> = ({
               : "0 2px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.96)",
           }}
         >{audioMuted ? "🔇" : "🔊"}</button>
+        <button
+          onClick={onToggleBgm}
+          title={bgmMuted ? "Unmute Music" : "Mute Music"}
+          aria-label={bgmMuted ? "Unmute Music" : "Mute Music"}
+          className="theme-toggle-btn"
+          style={{
+            background: card2, border: `1.5px solid ${border}`,
+            borderRadius: 10, width: 34, height: 34,
+            fontSize: 15, display: "flex", marginLeft: 4,
+            alignItems: "center", justifyContent: "center", flexShrink: 0,
+            boxShadow: isDark
+              ? "0 2px 10px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.04)"
+              : "0 2px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.96)",
+          }}
+        >{bgmMuted ? "🎵" : "🎶"}</button>
       </div>
 
       {/* ══ SCORE CARD ══ */}
