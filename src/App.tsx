@@ -754,6 +754,7 @@ function OverlayBtn({ children, onClick, variant, padV, padH, fontSize, minW }: 
 function LogoIcon({ size }: { size: number }) {
   return (
     <div style={{ position: "relative", display: "inline-flex", marginBottom: size * 0.18 }}>
+      {/* Ripple ring */}
       <div style={{
         position: "absolute", inset: -size * 0.12,
         borderRadius: size * 0.36,
@@ -761,19 +762,27 @@ function LogoIcon({ size }: { size: number }) {
         animation: "statRipple 2.8s ease-out infinite",
         pointerEvents: "none",
       }} />
-      <div style={{
-        display: "inline-flex", alignItems: "center", justifyContent: "center",
-        width: size, height: size, borderRadius: size * 0.26,
-        background: "linear-gradient(145deg, #4f54c8 0%, #6366f1 38%, #818cf8 72%, #22d3ee 100%)",
-        fontSize: size * 0.46, position: "relative",
-        boxShadow: [
-          "0 14px 48px rgba(99,102,241,0.65)",
-          "0 0 0 1px rgba(255,255,255,0.16)",
-          "inset 0 1.5px 0 rgba(255,255,255,0.28)",
-          "inset 0 -1px 0 rgba(0,0,0,0.22)",
-        ].join(", "),
-        animation: "logoGlow 3.2s ease-in-out infinite",
-      }}>🎮</div>
+      {/* Icon image */}
+      <img
+        src="/icon.png"
+        alt="GlitchCraft Icon"
+        draggable={false}
+        style={{
+          width: size, height: size,
+          borderRadius: size * 0.26,
+          objectFit: "cover",
+          display: "block",
+          boxShadow: [
+            "0 14px 48px rgba(99,102,241,0.65)",
+            "0 0 0 1px rgba(255,255,255,0.16)",
+            "inset 0 1.5px 0 rgba(255,255,255,0.28)",
+          ].join(", "),
+          animation: "logoGlow 3.2s ease-in-out infinite",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          flexShrink: 0,
+        }}
+      />
     </div>
   );
 }
@@ -781,22 +790,15 @@ function LogoIcon({ size }: { size: number }) {
 
 function TitleText({ size }: { size: number }) {
   return (
-    <img
-      src="/logo.png"
-      alt="GlitchCraft"
-      draggable={false}
-      style={{
-        height: Math.max(40, size * 1.4),
-        maxWidth: "80%",
-        objectFit: "contain",
-        display: "block",
-        margin: "0 auto 8px",
-        filter: "drop-shadow(0 0 18px rgba(99,102,241,0.7)) drop-shadow(0 0 6px rgba(34,211,238,0.45))",
-        animation: "logoGlow 3s ease-in-out infinite",
-        userSelect: "none",
-        WebkitUserSelect: "none",
-      }}
-    />
+    <div style={{
+      fontSize: size, fontWeight: 900,
+      letterSpacing: `${-Math.max(1, size * 0.05)}px`,
+      background: "linear-gradient(135deg, #6366f1 0%, #818cf8 30%, #22d3ee 60%, #6366f1 100%)",
+      backgroundSize: "220% auto",
+      WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+      lineHeight: 1.05, textAlign: "center", marginBottom: 8,
+      animation: "titleShimmer 4s linear infinite",
+    }}>GlitchCraft</div>
   );
 }
 
