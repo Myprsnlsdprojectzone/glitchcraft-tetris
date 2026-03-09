@@ -1,5 +1,5 @@
 /**
- * themes — Aesthetic Block Master colour system
+ * themes — GlitchCraft colour system
  *
  * Each ThemeConfig contains every colour token used by the app.
  * Components destructure what they need; `isDark` is a field on the

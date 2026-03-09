@@ -1,5 +1,5 @@
 /**
- * achievements — Aesthetic Block Master badge system
+ * achievements — GlitchCraft badge system
  *
  * Defines 10 achievements and provides localStorage persistence helpers.
  * No React — pure data layer.

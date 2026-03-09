@@ -1,5 +1,5 @@
 /**
- * useAudio — 8-bit chiptune sound engine for Aesthetic Block Master
+ * useAudio — 8-bit chiptune sound engine for GlitchCraft
  *
  * Uses the browser-native Web Audio API exclusively.
  * No npm dependencies. No audio files. Fully procedural.

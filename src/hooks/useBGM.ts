@@ -1,5 +1,5 @@
 /**
- * useBGM — Isolated Background Ambient Music engine for Aesthetic Block Master
+ * useBGM — Isolated Background Ambient Music engine for GlitchCraft
  *
  * Designed to loop a non-distracting 8-bit chiptune ambient track.
  * Strictly adheres to AI Agent Behavior Contract: Does NOT interfere

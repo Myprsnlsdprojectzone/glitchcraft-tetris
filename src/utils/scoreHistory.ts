@@ -1,5 +1,5 @@
 /**
- * scoreHistory — Local leaderboard persistence for Aesthetic Block Master
+ * scoreHistory — Local leaderboard persistence for GlitchCraft
  *
  * Pure utility module (no React). Stores the top-10 scores in localStorage.
  * Each entry records: score, lines cleared, level reached, and a human-readable

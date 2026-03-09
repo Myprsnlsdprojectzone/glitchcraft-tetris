@@ -365,20 +365,19 @@ export const TabletPanel: React.FC<Props> = ({
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{
-            width: 28, height: 28, borderRadius: 9,
-            background: "linear-gradient(135deg,#6366f1 0%,#818cf8 50%,#22d3ee 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 14, boxShadow: "0 4px 14px rgba(99,102,241,0.45)",
-            animation: "logoGlow 3s ease-in-out infinite", flexShrink: 0,
-          }}>🎮</div>
-          <span style={{
-            fontSize: 16, fontWeight: 900, letterSpacing: "-0.5px",
-            background: "linear-gradient(135deg,#6366f1 0%,#818cf8 50%,#22d3ee 100%)",
-            backgroundSize: "200% auto",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            animation: "titleShimmer 4s linear infinite",
-          }}>TETRIS</span>
+          <img
+            src="/logo.png"
+            alt="GlitchCraft"
+            draggable={false}
+            style={{
+              height: 28,
+              objectFit: "contain",
+              filter: "drop-shadow(0 0 8px rgba(99,102,241,0.65)) drop-shadow(0 0 3px rgba(34,211,238,0.4))",
+              animation: "logoGlow 3s ease-in-out infinite",
+              userSelect: "none",
+              WebkitUserSelect: "none",
+            }}
+          />
         </div>
         <button onClick={onToggleTheme} className="theme-toggle-btn" style={{
           background: card, border: `1.5px solid ${border}`,

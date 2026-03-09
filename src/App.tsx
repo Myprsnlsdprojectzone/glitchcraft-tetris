@@ -781,15 +781,22 @@ function LogoIcon({ size }: { size: number }) {
 
 function TitleText({ size }: { size: number }) {
   return (
-    <div style={{
-      fontSize: size, fontWeight: 900,
-      letterSpacing: `${-Math.max(1, size * 0.05)}px`,
-      background: "linear-gradient(135deg, #6366f1 0%, #818cf8 30%, #22d3ee 60%, #6366f1 100%)",
-      backgroundSize: "220% auto",
-      WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-      lineHeight: 1.05, textAlign: "center", marginBottom: 8,
-      animation: "titleShimmer 4s linear infinite",
-    }}>TETRIS</div>
+    <img
+      src="/logo.png"
+      alt="GlitchCraft"
+      draggable={false}
+      style={{
+        height: Math.max(40, size * 1.4),
+        maxWidth: "80%",
+        objectFit: "contain",
+        display: "block",
+        margin: "0 auto 8px",
+        filter: "drop-shadow(0 0 18px rgba(99,102,241,0.7)) drop-shadow(0 0 6px rgba(34,211,238,0.45))",
+        animation: "logoGlow 3s ease-in-out infinite",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
+    />
   );
 }
 
