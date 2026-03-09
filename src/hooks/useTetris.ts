@@ -13,6 +13,20 @@ import {
   hapticPause,
   hapticResume,
 } from "./useHaptics";
+import {
+  audioMove,
+  audioRotate,
+  audioSoftDrop,
+  audioHardDrop,
+  audioPieceLock,
+  audioHold,
+  audioLineClear,
+  audioLevelUp,
+  audioGameOver,
+  audioStart,
+  audioPause,
+  audioResume,
+} from "./useAudio";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type Cell = { filled: boolean; color: string };
@@ -225,6 +239,7 @@ export function useTetris(bindings: KeyBindings) {
       setGameOver(true);
       setRunning(false);
       hapticGameOver();
+      audioGameOver();
       // Save best score on game over
       setScore((s) => {
         const best = loadBest();
@@ -250,6 +265,7 @@ export function useTetris(bindings: KeyBindings) {
         // ── Haptic: line clear fires immediately so player feels it ──
         const newComboForHaptic = comboRef.current + 1;
         hapticLineClear(count, newComboForHaptic);
+        audioLineClear(count);
 
         setTimeout(() => {
           setFlashRows([]);
@@ -265,7 +281,7 @@ export function useTetris(bindings: KeyBindings) {
               setLevel(newLevel);
               levelRef.current = newLevel;
               // ── Haptic: level up — delayed so it doesn't clash with line-clear ──
-              setTimeout(() => hapticLevelUp(), 160);
+              setTimeout(() => { hapticLevelUp(); audioLevelUp(); }, 160);
             }
             return newLines;
           });
@@ -292,6 +308,7 @@ export function useTetris(bindings: KeyBindings) {
       } else {
         // No clear — reset combo streak, fire lock haptic
         hapticPieceLock();
+        audioPieceLock();
         setCombo(0);
         setBoard(clearedBoard);
         const nextPiece = nextRef.current;
@@ -309,6 +326,7 @@ export function useTetris(bindings: KeyBindings) {
     if (!p || !runningRef.current) return;
     if (isValid(boardRef.current, p, -1, 0)) {
       hapticMove();
+      audioMove();
       setCurrent({ ...p, x: p.x - 1 });
     }
   }, []);
@@ -318,6 +336,7 @@ export function useTetris(bindings: KeyBindings) {
     if (!p || !runningRef.current) return;
     if (isValid(boardRef.current, p, 1, 0)) {
       hapticMove();
+      audioMove();
       setCurrent({ ...p, x: p.x + 1 });
     }
   }, []);
@@ -327,6 +346,7 @@ export function useTetris(bindings: KeyBindings) {
     if (!p || !runningRef.current) return;
     if (isValid(boardRef.current, p, 0, 1)) {
       hapticSoftDrop();
+      audioSoftDrop();
       setCurrent({ ...p, y: p.y + 1 });
     } else {
       lockAndSpawn(p, boardRef.current);
@@ -341,6 +361,7 @@ export function useTetris(bindings: KeyBindings) {
     for (const kick of kicks) {
       if (isValid(boardRef.current, p, kick, 0, rotated)) {
         hapticRotate();
+        audioRotate();
         setCurrent({ ...p, shape: rotated, x: p.x + kick });
         return;
       }
@@ -353,6 +374,7 @@ export function useTetris(bindings: KeyBindings) {
     const dy = ghostPosition(boardRef.current, p);
     const dropped = { ...p, y: p.y + dy };
     hapticHardDrop();
+    audioHardDrop();
     setScore((s) => {
       const next = s + dy * 2;
       const best = loadBest();
@@ -368,6 +390,7 @@ export function useTetris(bindings: KeyBindings) {
     if (!p || !runningRef.current || holdLockedRef.current) return;
 
     hapticHold();
+    audioHold();
     const heldPrev = holdRef.current;
 
     // Reset current piece shape (in case it was rotated)
@@ -397,14 +420,15 @@ export function useTetris(bindings: KeyBindings) {
   // ── Game controls ──────────────────────────────────────────────────────────
   const togglePause = useCallback(() => {
     setRunning((r) => {
-      if (r) hapticPause();
-      else   hapticResume();
+      if (r) { hapticPause(); audioPause(); }
+      else   { hapticResume(); audioResume(); }
       return !r;
     });
   }, []);
 
   const startGame = useCallback(() => {
     hapticStart();
+    audioStart();
     bag = []; // reset bag
     const fresh  = emptyBoard();
     const first  = randomTetromino();

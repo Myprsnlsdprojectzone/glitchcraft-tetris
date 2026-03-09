@@ -1,6 +1,7 @@
 import { Tetromino, KeyBindings } from "../hooks/useTetris";
 import { NextPiece } from "./NextPiece";
 import { HoldPiece } from "./HoldPiece";
+import { ThemeConfig } from "../utils/themes";
 import {
   hapticMove, hapticRotate, hapticHardDrop,
   hapticSoftDrop, hapticHold,
@@ -19,15 +20,17 @@ interface Props {
   running:    boolean;
   started:    boolean;
   gameOver:   boolean;
-  isDark:     boolean;
+  theme:      ThemeConfig;
   panelH:     number;
   orientation: "portrait" | "landscape";
   bindings?:  KeyBindings;
+  audioMuted:     boolean;
   onStart:        () => void;
   onTogglePause:  () => void;
   onOpenControls: () => void;
   onOpenGuide:    () => void;
   onToggleTheme:  () => void;
+  onToggleAudio:  () => void;
   onMoveLeft:  () => void;
   onMoveRight: () => void;
   onRotate:    () => void;
@@ -40,22 +43,16 @@ export const TabletPanel: React.FC<Props> = ({
   score, bestScore, lines, level, combo,
   next, hold, holdLocked,
   running, started, gameOver,
-  isDark, panelH, orientation, bindings,
-  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme,
+  theme, panelH, orientation, bindings,
+  audioMuted,
+  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme, onToggleAudio,
   onMoveLeft, onMoveRight, onRotate, onHardDrop, onHold, onSoftDrop,
 }) => {
   const isPortrait = orientation === "portrait";
 
   /* ── Theme tokens ── */
-  const bg     = isDark ? "rgba(8,14,26,0.98)"  : "rgba(248,252,255,0.98)";
-  const border = isDark ? "#1a3050"  : "#d8e4f5";
-  const text   = isDark ? "#eef2ff"  : "#0f172a";
-  const sub    = isDark ? "#6a84a4"  : "#64748b";
-  const card   = isDark ? "rgba(12,20,34,0.95)" : "rgba(255,255,255,0.98)";
-  const accent = "#6366f1";
-  const cyan   = "#22d3ee";
-  const gold   = "#f59e0b";
-  const red    = "#f87171";
+  const { bg, card, border, text, sub, accent, accent2: cyan, gold, isDark } = theme;
+  const red = "#f87171";
 
   const levelColor =
     level >= 10 ? "#a855f7" :
@@ -227,6 +224,13 @@ export const TabletPanel: React.FC<Props> = ({
             fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: isDark ? "0 2px 10px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.08)",
           }}>{isDark ? "☀️" : "🌙"}</button>
+          {/* Audio toggle */}
+          <button onClick={onToggleAudio} aria-label={audioMuted ? "Unmute Sound" : "Mute Sound"} className="theme-toggle-btn" style={{
+            width: 44, height: 44, borderRadius: 12, flexShrink: 0, alignSelf: "center",
+            background: card, border: `2px solid ${border}`,
+            fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: isDark ? "0 2px 10px rgba(0,0,0,0.3)" : "0 2px 8px rgba(0,0,0,0.08)",
+          }}>{audioMuted ? "🔇" : "🔊"}</button>
         </div>
 
         {/* Controls row */}
@@ -354,6 +358,12 @@ export const TabletPanel: React.FC<Props> = ({
           fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
           boxShadow: isDark ? "0 2px 8px rgba(0,0,0,0.4)" : "0 2px 8px rgba(0,0,0,0.07)",
         }}>{isDark ? "☀️" : "🌙"}</button>
+        <button onClick={onToggleAudio} aria-label={audioMuted ? "Unmute Sound" : "Mute Sound"} className="theme-toggle-btn" style={{
+          background: card, border: `1.5px solid ${border}`,
+          borderRadius: 9, width: 34, height: 34,
+          fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: isDark ? "0 2px 8px rgba(0,0,0,0.4)" : "0 2px 8px rgba(0,0,0,0.07)",
+        }}>{audioMuted ? "🔇" : "🔊"}</button>
       </div>
 
       {/* Score */}

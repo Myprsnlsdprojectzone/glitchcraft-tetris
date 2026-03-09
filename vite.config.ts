@@ -8,6 +8,8 @@ import { VitePWA } from "vite-plugin-pwa";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { visualizer } from "rollup-plugin-visualizer";
+
 // https://vite.dev/config/
 export default defineConfig({
   base: "./",
@@ -43,9 +45,29 @@ export default defineConfig({
         ],
       },
     }),
+    visualizer({
+      filename: "dist/stats.html",
+      gzipSize: true,
+      brotliSize: true,
+    }),
   ],
   build: {
     outDir: "dist",
+    minify: "terser",
+    cssMinify: true,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
   },
   resolve: {
     alias: {

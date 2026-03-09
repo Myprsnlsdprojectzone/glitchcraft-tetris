@@ -3,6 +3,11 @@ import ReactDOM from "react-dom";
 import { useTetris, KeyBindings, DEFAULT_BINDINGS, Tetromino } from "./hooks/useTetris";
 import { useViewportScale } from "./hooks/useViewportScale";
 import { useTouchControls } from "./hooks/useTouchControls";
+import { setAudioEnabled } from "./hooks/useAudio";
+import { getScores, addScore, ScoreEntry } from "./utils/scoreHistory";
+import { THEMES, nextThemeId, ThemeConfig } from "./utils/themes";
+import { useAchievements } from "./hooks/useAchievements";
+import { AchievementToast } from "./components/AchievementToast";
 import { Board } from "./components/Board";
 import { InfoPanel } from "./components/InfoPanel";
 import { MobilePanel } from "./components/MobilePanel";
@@ -108,7 +113,7 @@ interface GameState {
 }
 
 interface UICallbacks {
-  isDark: boolean; bindings: KeyBindings;
+  theme: ThemeConfig; bindings: KeyBindings;
   onToggleTheme: () => void; onOpenControls: () => void; onOpenGuide: () => void;
 }
 
@@ -116,16 +121,56 @@ interface UICallbacks {
    APP ROOT
 ══════════════════════════════════════════════════════════════════════ */
 export default function App() {
-  const [isDark, setIsDark] = useState(true);
+  /* ── Theme ── */
+  const [themeId, setThemeId] = useState<string>(
+    () => localStorage.getItem("glitchcraft_theme") ?? "neon"
+  );
+  const theme = THEMES[themeId] ?? THEMES.neon;
+
+  const handleCycleTheme = useCallback(() => {
+    setThemeId(prev => {
+      const next = nextThemeId(prev);
+      localStorage.setItem("glitchcraft_theme", next);
+      return next;
+    });
+  }, []);
+
   const [showControls, setShowControls] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
   const [bindings, setBindings] = useState<KeyBindings>({ ...DEFAULT_BINDINGS });
+  const [audioMuted, setAudioMuted] = useState<boolean>(
+    () => localStorage.getItem("glitchcraft_audio") === "off"
+  );
+
+  const handleToggleAudio = useCallback(() => {
+    setAudioMuted(m => {
+      const next = !m;
+      setAudioEnabled(!next);
+      localStorage.setItem("glitchcraft_audio", next ? "off" : "on");
+      return next;
+    });
+  }, []);
 
   const { scale, isMobile, isTablet, layoutMode, vw, vh } =
     useViewportScale(NATURAL_W, NATURAL_H, 12);
 
   const handleSaveBindings = useCallback((b: KeyBindings) => setBindings(b), []);
   const gs = useTetris(bindings) as GameState;
+
+  /* ── Score history ── */
+  const [scores, setScores] = useState<ScoreEntry[]>(() => getScores());
+  const prevGameOver = useRef(false);
+
+  /* ── Achievements (observer — reads gs, writes localStorage) ── */
+  const { achievements, toastQueue, dismissToast } = useAchievements(gs);
+
+  useEffect(() => {
+    // Fires exactly once when a started game transitions to game-over
+    if (gs.started && gs.gameOver && !prevGameOver.current) {
+      setScores(addScore(gs.score, gs.lines, gs.level));
+    }
+    prevGameOver.current = gs.gameOver;
+  }, [gs.gameOver, gs.started, gs.score, gs.lines, gs.level]);
 
   const boardRef = useRef<HTMLDivElement>(null);
   useTouchControls(boardRef as React.RefObject<HTMLElement | null>, {
@@ -134,14 +179,8 @@ export default function App() {
     isRunning: () => gs.running,
   });
 
-  /* ── Theme tokens ── */
-  const bgGradient = isDark
-    ? "radial-gradient(ellipse at 18% 18%, #0d1128 0%, #060b18 42%, #080d1e 72%, #0a0f20 100%)"
-    : "radial-gradient(ellipse at 18% 18%, #eef2ff 0%, #e8edf8 42%, #dce6f5 72%, #d4e0f2 100%)";
-  const overlayBg = isDark ? "rgba(3,6,16,0.94)" : "rgba(238,242,255,0.94)";
-  const overlayBgPause = isDark ? "rgba(3,6,16,0.82)" : "rgba(238,242,255,0.82)";
-  const overlayText = isDark ? "#f1f5f9" : "#0f172a";
-  const overlaySub = isDark ? "rgba(148,163,184,0.82)" : "rgba(71,85,105,0.88)";
+  /* ── Overlay tokens (from theme) ── */
+  const { bgGradient, overlayBg, overlayBgPause, overlayText, overlaySub } = theme;
 
   /* ── Tablet sizes ── */
   const tabletPCell = Math.floor(Math.min((vw - 16) / 10, (vh * 0.58) / 20));
@@ -158,14 +197,14 @@ export default function App() {
   const isTabletLandscape = layoutMode === "tablet-landscape";
 
   const ui: UICallbacks = {
-    isDark, bindings,
-    onToggleTheme: () => setIsDark(d => !d),
+    theme, bindings,
+    onToggleTheme: handleCycleTheme,
     onOpenControls: () => setShowControls(true),
     onOpenGuide: () => setShowGuide(true),
   };
 
   const overlayConfig = {
-    overlayBg, overlayBgPause, overlayText, overlaySub, isDark, gs,
+    overlayBg, overlayBgPause, overlayText, overlaySub, isDark: theme.isDark, gs,
     onGuide: ui.onOpenGuide,
   };
 
@@ -181,22 +220,10 @@ export default function App() {
       overflow: "hidden",
     }}>
       {/* Ambient blobs */}
-      <AmbientBlob top="5%" left="3%" size={560}
-        color={isDark ? "radial-gradient(circle,rgba(99,102,241,0.09) 0%,transparent 68%)"
-          : "radial-gradient(circle,rgba(99,102,241,0.07) 0%,transparent 68%)"}
-        duration="12s" />
-      <AmbientBlob bottom="7%" right="4%" size={460}
-        color={isDark ? "radial-gradient(circle,rgba(34,211,238,0.065) 0%,transparent 68%)"
-          : "radial-gradient(circle,rgba(34,211,238,0.05) 0%,transparent 68%)"}
-        duration="15s" delay="4s" />
-      <AmbientBlob top="42%" left="43%" size={340}
-        color={isDark ? "radial-gradient(circle,rgba(168,85,247,0.045) 0%,transparent 68%)"
-          : "radial-gradient(circle,rgba(168,85,247,0.035) 0%,transparent 68%)"}
-        duration="20s" delay="7s" />
-      <AmbientBlob top="15%" right="12%" size={280}
-        color={isDark ? "radial-gradient(circle,rgba(245,158,11,0.04) 0%,transparent 65%)"
-          : "radial-gradient(circle,rgba(245,158,11,0.03) 0%,transparent 65%)"}
-        duration="17s" delay="2s" />
+      <AmbientBlob top="5%" left="3%" size={560} color={theme.blobA} duration="12s" />
+      <AmbientBlob bottom="7%" right="4%" size={460} color={theme.blobB} duration="15s" delay="4s" />
+      <AmbientBlob top="42%" left="43%" size={340} color={theme.blobC} duration="20s" delay="7s" />
+      <AmbientBlob top="15%" right="12%" size={280} color={theme.blobD} duration="17s" delay="2s" />
 
       {/* ════ MOBILE ════ */}
       {isMobile && (
@@ -210,7 +237,7 @@ export default function App() {
             touchAction: "none", userSelect: "none", marginTop: 4,
           }}>
             <Board board={gs.board} current={gs.current} ghost={gs.ghost}
-              flashRows={gs.flashRows} isDark={isDark} cellSize={mobileCellSize} />
+              flashRows={gs.flashRows} theme={theme} cellSize={mobileCellSize} />
           </div>
           <div style={{ width: "100%", flex: 1, minHeight: 0, flexShrink: 0 }}>
             <MobilePanel
@@ -218,7 +245,9 @@ export default function App() {
               level={gs.level} combo={gs.combo}
               next={gs.next} hold={gs.hold} holdLocked={gs.holdLocked}
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
-              isDark={isDark} panelH={mobilePanelH}
+              theme={theme} panelH={mobilePanelH}
+              audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
+              scores={scores}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
@@ -242,7 +271,7 @@ export default function App() {
             touchAction: "none", userSelect: "none", marginTop: 8,
           }}>
             <Board board={gs.board} current={gs.current} ghost={gs.ghost}
-              flashRows={gs.flashRows} isDark={isDark} cellSize={tabletPCell} />
+              flashRows={gs.flashRows} theme={theme} cellSize={tabletPCell} />
           </div>
           <div style={{ width: "100%", flex: 1, minHeight: 0, flexShrink: 0 }}>
             <TabletPanel
@@ -250,7 +279,8 @@ export default function App() {
               level={gs.level} combo={gs.combo}
               next={gs.next} hold={gs.hold} holdLocked={gs.holdLocked}
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
-              isDark={isDark} panelH={tabletPPanelH} orientation="portrait"
+              theme={theme} panelH={tabletPPanelH} orientation="portrait"
+              audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
@@ -276,7 +306,7 @@ export default function App() {
             height: tabletLCell * 20,
           }}>
             <Board board={gs.board} current={gs.current} ghost={gs.ghost}
-              flashRows={gs.flashRows} isDark={isDark} cellSize={tabletLCell} />
+              flashRows={gs.flashRows} theme={theme} cellSize={tabletLCell} />
           </div>
           <div style={{ width: tabletLPanelW, height: tabletLCell * 20, flexShrink: 0 }}>
             <TabletPanel
@@ -284,8 +314,9 @@ export default function App() {
               level={gs.level} combo={gs.combo}
               next={gs.next} hold={gs.hold} holdLocked={gs.holdLocked}
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
-              isDark={isDark} panelH={tabletLCell * 20} orientation="landscape"
+              theme={theme} panelH={tabletLCell * 20} orientation="landscape"
               bindings={bindings}
+              audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
@@ -308,10 +339,10 @@ export default function App() {
           flexShrink: 0,
         }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
-            {isDark && <div className="board-neon-aura" />}
+            {theme.isDark && <div className="board-neon-aura" />}
             <div ref={boardRef} className={`game-board-wrapper gradient-border${gs.running ? " board-glow-border" : ""}`}>
               <Board board={gs.board} current={gs.current} ghost={gs.ghost}
-                flashRows={gs.flashRows} isDark={isDark} cellSize={CELL} />
+                flashRows={gs.flashRows} theme={theme} cellSize={CELL} />
             </div>
           </div>
           <div style={{ width: PANEL_W, flexShrink: 0, height: NATURAL_H }}>
@@ -320,7 +351,9 @@ export default function App() {
               level={gs.level} combo={gs.combo}
               next={gs.next} hold={gs.hold} holdLocked={gs.holdLocked}
               running={gs.running} started={gs.started} gameOver={gs.gameOver}
-              isDark={isDark} bindings={bindings} panelH={NATURAL_H}
+              theme={theme} bindings={bindings} panelH={NATURAL_H}
+              audioMuted={audioMuted} onToggleAudio={handleToggleAudio}
+              scores={scores} achievements={achievements}
               onStart={gs.startGame} onTogglePause={gs.togglePause}
               onOpenControls={ui.onOpenControls} onOpenGuide={ui.onOpenGuide}
               onToggleTheme={ui.onToggleTheme}
@@ -339,12 +372,14 @@ export default function App() {
       {/* Portaled Modals */}
       {showControls && (
         <ControlsModal bindings={bindings} onSave={handleSaveBindings}
-          onClose={() => setShowControls(false)} isDark={isDark} />
+          onClose={() => setShowControls(false)} isDark={theme.isDark} />
       )}
       {showGuide && (
         <ManualGuide onClose={() => setShowGuide(false)}
-          isDark={isDark} bindings={bindings} />
+          isDark={theme.isDark} bindings={bindings} />
       )}
+      {/* Achievement toast notifications — fixed bottom-right, app-level */}
+      <AchievementToast toastQueue={toastQueue} theme={theme} onDismiss={dismissToast} />
     </div>
   );
 }

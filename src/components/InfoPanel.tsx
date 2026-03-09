@@ -2,6 +2,10 @@ import { useRef, useEffect, useState } from "react";
 import { Tetromino, KeyBindings } from "../hooks/useTetris";
 import { NextPiece } from "./NextPiece";
 import { HoldPiece } from "./HoldPiece";
+import { ScoreHistory } from "./ScoreHistory";
+import { ScoreEntry } from "../utils/scoreHistory";
+import { ThemeConfig } from "../utils/themes";
+import { AchievementState } from "../utils/achievements";
 
 interface Props {
   score:      number;
@@ -15,33 +19,30 @@ interface Props {
   running:    boolean;
   started:    boolean;
   gameOver:   boolean;
-  isDark:     boolean;
+  theme:      ThemeConfig;
   bindings:   KeyBindings;
   panelH:     number;
+  audioMuted:     boolean;
+  scores:         ScoreEntry[];
+  achievements:   AchievementState[];
   onStart:        () => void;
   onTogglePause:  () => void;
   onOpenControls: () => void;
   onOpenGuide:    () => void;
   onToggleTheme:  () => void;
+  onToggleAudio:  () => void;
 }
 
 export const InfoPanel: React.FC<Props> = ({
   score, bestScore, lines, level, combo,
   next, hold, holdLocked,
   running, started, gameOver,
-  isDark, bindings, panelH,
-  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme,
+  theme, bindings, panelH,
+  audioMuted, scores, achievements,
+  onStart, onTogglePause, onOpenControls, onOpenGuide, onToggleTheme, onToggleAudio,
 }) => {
   /* ── Theme tokens ── */
-  const bg     = isDark ? "rgba(7,12,26,0.99)"  : "rgba(252,254,255,0.99)";
-  const border = isDark ? "#192d4a"  : "#dde8f5";
-  const text   = isDark ? "#eef2ff"  : "#0f172a";
-  const sub    = isDark ? "#607a98"  : "#64748b";
-  const card   = isDark ? "rgba(6,11,22,0.98)"  : "rgba(248,252,255,0.99)";
-  const card2  = isDark ? "rgba(10,18,32,0.92)" : "#eef4ff";
-  const accent  = "#6366f1";
-  const accent2 = "#22d3ee";
-  const gold    = "#f59e0b";
+  const { bg, card, card2, border, text, sub, accent, accent2, gold, isDark } = theme;
 
   /* ── Animated score ── */
   const [displayScore, setDisplayScore] = useState(score);
@@ -146,8 +147,8 @@ export const InfoPanel: React.FC<Props> = ({
         </div>
         <button
           onClick={onToggleTheme}
-          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          title={`Switch theme (${theme.name})`}
+          aria-label={`Switch theme (${theme.name})`}
           className="theme-toggle-btn"
           style={{
             background: card2, border: `1.5px solid ${border}`,
@@ -158,7 +159,22 @@ export const InfoPanel: React.FC<Props> = ({
               ? "0 2px 10px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.04)"
               : "0 2px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.96)",
           }}
-        >{isDark ? "☀️" : "🌙"}</button>
+        >{theme.emoji}</button>
+        <button
+          onClick={onToggleAudio}
+          title={audioMuted ? "Unmute Sound" : "Mute Sound"}
+          aria-label={audioMuted ? "Unmute Sound" : "Mute Sound"}
+          className="theme-toggle-btn"
+          style={{
+            background: card2, border: `1.5px solid ${border}`,
+            borderRadius: 10, width: 34, height: 34,
+            fontSize: 15, display: "flex",
+            alignItems: "center", justifyContent: "center", flexShrink: 0,
+            boxShadow: isDark
+              ? "0 2px 10px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.04)"
+              : "0 2px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.96)",
+          }}
+        >{audioMuted ? "🔇" : "🔊"}</button>
       </div>
 
       {/* ══ SCORE CARD ══ */}
@@ -424,37 +440,89 @@ export const InfoPanel: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* ══ SPACER ══ */}
-      <div style={{ flex: 1 }} />
-
-      {/* ══ QUICK KEYS ══ */}
-      <div style={{
-        borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.052)" : "rgba(0,0,0,0.068)"}`,
-        paddingTop: 9, flexShrink: 0, marginBottom: 8,
-      }}>
-        <div style={{
-          fontSize: 8, color: sub, textTransform: "uppercase",
-          letterSpacing: "0.12em", fontWeight: 800, marginBottom: 6,
-        }}>Quick Keys</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3px 6px" }}>
-          {([
-            { action: "Left",      key: bindings.left     },
-            { action: "Right",     key: bindings.right    },
-            { action: "Soft Drop", key: bindings.down     },
-            { action: "Rotate",    key: bindings.rotate   },
-            { action: "Hard Drop", key: bindings.hardDrop },
-            { action: "Hold",      key: bindings.hold     },
-            { action: "Pause",     key: bindings.pause    },
-          ] as const).map(({ action, key }) => (
-            <div key={action} style={{
-              display: "flex", justifyContent: "space-between", alignItems: "center",
-            }}>
-              <span style={{ fontSize: 8.5, color: sub, fontWeight: 600 }}>{action}</span>
-              <KeyBadge value={key} card={card} border={border} text={text} />
-            </div>
-          ))}
+      {/* ══ SCORE HISTORY / ACHIEVEMENTS / QUICK KEYS ══ */}
+      {scores.length > 0 && (!started || gameOver) ? (
+        /* Idle + scores → leaderboard */
+        <div style={{ flexShrink: 0, paddingBottom: 4 }}>
+          <ScoreHistory scores={scores} isDark={isDark} limit={5} />
         </div>
-      </div>
+      ) : (!started || gameOver) ? (
+        /* Idle + no scores → achievement badge grid */
+        <div style={{
+          borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.052)" : "rgba(0,0,0,0.068)"}`,
+          paddingTop: 9, flexShrink: 0, marginBottom: 2,
+        }}>
+          <div style={{
+            fontSize: 8, color: sub, textTransform: "uppercase",
+            letterSpacing: "0.12em", fontWeight: 800, marginBottom: 6,
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+          }}>
+            <span>🏆 Achievements</span>
+            <span style={{ color: accent }}>
+              {achievements.filter(a => a.unlocked).length}/{achievements.length}
+            </span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4px 8px" }}>
+            {achievements.map(ach => (
+              <div
+                key={ach.id}
+                title={ach.unlocked ? `${ach.name}: ${ach.desc} ✓` : `🔒 ${ach.name}: ${ach.desc}`}
+                style={{
+                  display: "flex", alignItems: "center", gap: 5,
+                  opacity: ach.unlocked ? 1 : 0.22,
+                }}
+              >
+                <span style={{
+                  fontSize: 15, lineHeight: 1,
+                  filter: ach.unlocked ? `drop-shadow(0 0 5px ${accent})` : "none",
+                  transition: "filter 0.3s",
+                }}>
+                  {ach.emoji}
+                </span>
+                <span style={{
+                  fontSize: 9, color: ach.unlocked ? text : sub,
+                  fontWeight: ach.unlocked ? 700 : 400,
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                }}>
+                  {ach.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* Running / paused → quick keys */
+        <div style={{
+          borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.052)" : "rgba(0,0,0,0.068)"}`,
+          paddingTop: 9, flexShrink: 0, marginBottom: 8,
+        }}>
+          <div style={{
+            fontSize: 8, color: sub, textTransform: "uppercase",
+            letterSpacing: "0.12em", fontWeight: 800, marginBottom: 6,
+          }}>Quick Keys</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3px 6px" }}>
+            {([
+              { action: "Left",      key: bindings.left     },
+              { action: "Right",     key: bindings.right    },
+              { action: "Soft Drop", key: bindings.down     },
+              { action: "Rotate",    key: bindings.rotate   },
+              { action: "Hard Drop", key: bindings.hardDrop },
+              { action: "Hold",      key: bindings.hold     },
+              { action: "Pause",     key: bindings.pause    },
+            ] as const).map(({ action, key }) => (
+              <div key={action} style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+              }}>
+                <span style={{ fontSize: 8.5, color: sub, fontWeight: 600 }}>{action}</span>
+                <KeyBadge value={key} card={card} border={border} text={text} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* Flex spacer when leaderboard is NOT shown */}
+      {!(scores.length > 0 && (!started || gameOver)) && <div style={{ flex: 1 }} />}
+
 
       {/* ══ ACTION BUTTONS ══ */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6, flexShrink: 0 }}>

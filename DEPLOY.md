@@ -1,53 +1,74 @@
 # 🚀 How to Deploy GlitchCraft to the Internet (Free)
 
-## Step 1 — Create a Free Vercel Account
-
-1. Go to **[vercel.com](https://vercel.com)**
-2. Click **"Sign Up"** → choose **"Continue with GitHub"**
-3. If you don't have GitHub: go to **[github.com](https://github.com)** and create a free account first
-
----
-
-## Step 2 — Upload Your Game to GitHub
-
-1. Go to **[github.com](https://github.com)** → click **"+" → "New repository"**
-2. Name it: `glitchcraft-tetris`
-3. Keep it **Public**, click **"Create repository"**
-4. On the next page, click **"uploading an existing file"**
-5. Drag and drop your **entire project folder** (`minimalist-tetris-game-controls`) contents
-6. Click **"Commit changes"**
+## What's Already Done For You ✅
+- PWA (installable on Android) — configured
+- AdSense placeholder — ready (just add your publisher ID later)  
+- Vercel config — ready
+- Git repo — initialized with first commit
 
 ---
 
-## Step 3 — Deploy on Vercel
+## Step 1 — Create a Free GitHub Account
+Go to **[github.com](https://github.com)** → Sign Up (free)
 
-1. Go to **[vercel.com/dashboard](https://vercel.com/dashboard)**
+---
+
+## Step 2 — Create a New Repository on GitHub
+1. Click **"+"** (top right) → **"New repository"**
+2. **Repository name**: `glitchcraft-tetris`
+3. Keep it **Public**
+4. ❌ Do NOT check "Add README" or any other option
+5. Click **"Create repository"**
+
+---
+
+## Step 3 — Push Your Code to GitHub
+After creating the repo, GitHub shows you a page with commands.
+
+Copy the URL shown (looks like `https://github.com/YOUR-USERNAME/glitchcraft-tetris.git`), then run these commands in your terminal:
+
+```
+git remote add origin https://github.com/YOUR-USERNAME/glitchcraft-tetris.git
+git branch -M main
+git push -u origin main
+```
+
+> Replace `YOUR-USERNAME` with your actual GitHub username.
+
+---
+
+## Step 4 — Deploy on Vercel (Free)
+1. Go to **[vercel.com](https://vercel.com)** → Sign Up with GitHub
 2. Click **"Add New → Project"**
-3. Find your `glitchcraft-tetris` repository → click **"Import"**
-4. Vercel auto-detects it's a Vite app — just click **"Deploy"**
-5. Wait ~60 seconds → your game is **LIVE** 🎉
+3. Find `glitchcraft-tetris` → click **"Import"**
+4. Click **"Deploy"** — no other settings needed
+5. Wait ~60 seconds → **your game is LIVE!** 🎉
 
-You'll get a free URL like: `https://glitchcraft-tetris.vercel.app`
-
----
-
-## Step 4 — Test "Install to Phone"
-
-1. Open your game URL on your **Android phone** in Chrome
-2. Chrome will show a banner: **"Add GlitchCraft to home screen"**
-3. Tap it → app icon appears on your phone like a real game app!
-4. Launch it → **full screen, no browser bar**, works offline ✅
+You get a free URL like: `https://glitchcraft-tetris.vercel.app`
 
 ---
 
-## Step 5 — Every Time You Update the Game
-
-Just push your changes to GitHub — Vercel automatically redeploys!
+## Step 5 — Test "Install" on Android
+1. Open your Vercel URL on your **Android phone** in Chrome
+2. Tap the **⋮ menu → "Add to Home screen"**
+3. The game installs as a full-screen app on your phone! ✅
 
 ---
 
-## 💡 Tips for More Downloads
-- Share your link on Reddit (r/indiegaming, r/webgames)
-- Post gameplay videos on TikTok / Instagram
-- Share on WhatsApp / Telegram groups
-- Add to: **[itch.io](https://itch.io)** (free game storefront)
+## Every Time You Make Changes
+1. Save your files  
+2. Run in terminal:
+   ```
+   git add .
+   git commit -m "update: describe your change here"
+   git push
+   ```
+3. Vercel auto-deploys within ~30 seconds — done!
+
+---
+
+## 💡 Share Your Game for More Players
+- Post on **Reddit** → r/webgames, r/indiegaming, r/androidgaming
+- Share on **WhatsApp / Telegram** groups
+- Post gameplay on **TikTok / Instagram Reels**
+- Submit to **[itch.io](https://itch.io)** (free game storefront)

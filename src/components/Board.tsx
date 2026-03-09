@@ -1,12 +1,14 @@
 import { useMemo } from "react";
 import { Board as BoardType, Tetromino } from "../hooks/useTetris";
+import { ThemeConfig } from "../utils/themes";
+import { ParticleBurst } from "./ParticleBurst";
 
 interface Props {
   board:     BoardType;
   current:   Tetromino | null;
   ghost:     Tetromino | null;
   flashRows: number[];
-  isDark:    boolean;
+  theme:     ThemeConfig;
   cellSize?: number;
 }
 
@@ -43,8 +45,9 @@ function hexAlpha(hex: string, alpha: string): string {
 }
 
 export const Board: React.FC<Props> = ({
-  board, current, ghost, flashRows, isDark, cellSize = 34,
+  board, current, ghost, flashRows, theme, cellSize = 34,
 }) => {
+  const { isDark, boardBg, boardBorder, boardGrid, boardGlowRgb } = theme;
   const C = cellSize;
 
   /* ── Merge ghost + current onto board for display ── */
@@ -94,9 +97,10 @@ export const Board: React.FC<Props> = ({
     return { cx, cy, color: current.color };
   }, [current]);
 
-  const borderColor = isDark ? "#1a3458" : "#c0d4ec";
-  const bgColor     = isDark ? "#060c1a" : "#f2f6fc";
-  const gridColor   = isDark ? "rgba(255,255,255,0.022)" : "rgba(0,0,0,0.036)";
+  const borderColor = boardBorder;
+  const bgColor     = boardBg;
+  const gridColor   = boardGrid;
+
 
   return (
     <div
@@ -115,14 +119,14 @@ export const Board: React.FC<Props> = ({
         willChange: "contents",
         boxShadow: isDark
           ? [
-              "0 0 0 1px rgba(99,102,241,0.10)",
-              "0 0 64px rgba(99,102,241,0.13)",
+              `0 0 0 1px rgba(${boardGlowRgb},0.10)`,
+              `0 0 64px rgba(${boardGlowRgb},0.13)`,
               "0 24px 64px rgba(0,0,0,0.72)",
               "inset 0 1px 0 rgba(255,255,255,0.04)",
               "inset 0 0 42px rgba(0,0,0,0.32)",
             ].join(", ")
           : [
-              "0 0 0 1px rgba(99,102,241,0.07)",
+              `0 0 0 1px rgba(${boardGlowRgb},0.07)`,
               "0 12px 42px rgba(0,0,0,0.12)",
               "inset 0 1px 0 rgba(255,255,255,0.88)",
               "inset 0 0 32px rgba(0,0,0,0.022)",
@@ -173,7 +177,7 @@ export const Board: React.FC<Props> = ({
           left: cx * C + C / 2 - 1.5,
           top:  cy * C + C / 2 - 1.5,
           width: 3, height: 3, borderRadius: "50%",
-          background: isDark ? "rgba(99,102,241,0.20)" : "rgba(99,102,241,0.14)",
+          background: isDark ? `rgba(${boardGlowRgb},0.20)` : `rgba(${boardGlowRgb},0.14)`,
           pointerEvents: "none", zIndex: 1,
         }} />
       ))}
@@ -298,8 +302,8 @@ export const Board: React.FC<Props> = ({
         position: "absolute", top: 0, left: 0, right: 0,
         height: C * 2.8,
         background: isDark
-          ? "linear-gradient(to bottom, rgba(6,12,26,0.44) 0%, transparent 100%)"
-          : "linear-gradient(to bottom, rgba(242,246,252,0.48) 0%, transparent 100%)",
+          ? `linear-gradient(to bottom, ${boardBg.replace(")", "")}44 0%, transparent 100%)`
+          : `linear-gradient(to bottom, ${boardBg.replace(")", "")}48 0%, transparent 100%)`,
         pointerEvents: "none", zIndex: 3,
       }} />
 
@@ -308,8 +312,8 @@ export const Board: React.FC<Props> = ({
         position: "absolute", bottom: 0, left: 0, right: 0,
         height: C * 1.4,
         background: isDark
-          ? "linear-gradient(to top, rgba(6,12,26,0.24) 0%, transparent 100%)"
-          : "linear-gradient(to top, rgba(242,246,252,0.22) 0%, transparent 100%)",
+          ? `linear-gradient(to top, ${boardBg.replace(")", "")}24 0%, transparent 100%)`
+          : `linear-gradient(to top, ${boardBg.replace(")", "")}22 0%, transparent 100%)`,
         pointerEvents: "none", zIndex: 3,
       }} />
 
@@ -327,10 +331,12 @@ export const Board: React.FC<Props> = ({
       <div style={{
         position: "absolute", inset: 0,
         background: isDark
-          ? "linear-gradient(to right, rgba(0,0,0,0.13) 0%, transparent 9%, transparent 91%, rgba(0,0,0,0.13) 100%)"
-          : "linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 9%, transparent 91%, rgba(0,0,0,0.04) 100%)",
+          ? `linear-gradient(to right, rgba(0,0,0,0.13) 0%, transparent 9%, transparent 91%, rgba(0,0,0,0.13) 100%)`
+          : `linear-gradient(to right, rgba(0,0,0,0.04) 0%, transparent 9%, transparent 91%, rgba(0,0,0,0.04) 100%)`,
         pointerEvents: "none", zIndex: 5,
       }} />
+      {/* ── Particle burst on line clear (canvas overlay, z-index 9) ── */}
+      <ParticleBurst flashRows={flashRows} cellSize={C} theme={theme} />
     </div>
   );
 };

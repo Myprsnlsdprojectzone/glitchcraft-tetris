@@ -1,6 +1,9 @@
 import { Tetromino } from "../hooks/useTetris";
 import { NextPiece } from "./NextPiece";
 import { HoldPiece } from "./HoldPiece";
+import { ScoreHistory } from "./ScoreHistory";
+import { ScoreEntry } from "../utils/scoreHistory";
+import { ThemeConfig } from "../utils/themes";
 import {
   hapticMove, hapticRotate, hapticHardDrop,
   hapticSoftDrop, hapticHold,
@@ -19,13 +22,16 @@ interface Props {
   running:    boolean;
   started:    boolean;
   gameOver:   boolean;
-  isDark:     boolean;
+  theme:      ThemeConfig;
   panelH:     number;
+  audioMuted:     boolean;
+  scores:         ScoreEntry[];
   onStart:        () => void;
   onTogglePause:  () => void;
   onOpenControls: () => void;
   onOpenGuide:    () => void;
   onToggleTheme:  () => void;
+  onToggleAudio:  () => void;
   onMoveLeft:  () => void;
   onMoveRight: () => void;
   onRotate:    () => void;
@@ -38,18 +44,12 @@ export const MobilePanel: React.FC<Props> = ({
   score, bestScore, lines, level, combo,
   next, hold, holdLocked,
   running, started, gameOver,
-  isDark, panelH,
-  onStart, onTogglePause, onOpenGuide, onToggleTheme,
+  theme, panelH,
+  audioMuted, scores,
+  onStart, onTogglePause, onOpenGuide, onToggleTheme, onToggleAudio,
   onMoveLeft, onMoveRight, onRotate, onHardDrop, onHold, onSoftDrop,
 }) => {
-  const bg      = isDark ? "rgba(8,14,26,0.98)"  : "rgba(248,252,255,0.98)";
-  const border  = isDark ? "#1a3050"  : "#d8e4f5";
-  const text    = isDark ? "#eef2ff"  : "#0f172a";
-  const sub     = isDark ? "#6a84a4"  : "#64748b";
-  const card    = isDark ? "rgba(12,20,34,0.95)" : "rgba(255,255,255,0.98)";
-  const accent  = "#6366f1";
-  const cyan    = "#22d3ee";
-  const gold    = "#f59e0b";
+  const { bg, card, border, text, sub, accent, accent2: cyan, gold, isDark } = theme;
 
   const levelColor =
     level >= 10 ? "#a855f7" :
@@ -210,7 +210,33 @@ export const MobilePanel: React.FC<Props> = ({
               : "0 1px 6px rgba(0,0,0,0.08)",
           }}
         >{isDark ? "☀️" : "🌙"}</button>
+        {/* Audio toggle */}
+        <button
+          onClick={onToggleAudio}
+          aria-label={audioMuted ? "Unmute Sound" : "Mute Sound"}
+          className="theme-toggle-btn"
+          style={{
+            width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+            background: card, border: `1.5px solid ${border}`,
+            fontSize: 15, display: "flex",
+            alignItems: "center", justifyContent: "center",
+            boxShadow: isDark
+              ? "0 2px 8px rgba(0,0,0,0.3)"
+              : "0 1px 6px rgba(0,0,0,0.08)",
+          }}
+        >{audioMuted ? "🔇" : "🔊"}</button>
       </div>
+
+      {/* ── Top-3 compact leaderboard ── */}
+      {scores.length > 0 && (
+        <div style={{
+          padding: "3px 8px",
+          borderBottom: `1px solid ${border}`,
+          background: isDark ? "rgba(6,10,20,0.55)" : "rgba(240,248,255,0.65)",
+        }}>
+          <ScoreHistory scores={scores} isDark={isDark} limit={3} compact />
+        </div>
+      )}
 
       {/* ── Main controls row ── */}
       <div style={{
