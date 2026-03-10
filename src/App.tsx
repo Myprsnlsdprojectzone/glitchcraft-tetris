@@ -213,8 +213,10 @@ export default function App() {
   const tabletLPanelW = Math.max(220, vw - tabletLCell * 10 - 48);
 
   /* ── Mobile sizes ── */
-  const mobileCellSize = Math.floor(Math.min((vw - 8) / 10, (vh * 0.60) / 20));
-  const mobilePanelH = Math.max(160, vh - mobileCellSize * 20 - 16);
+  // Guarantee at least 260px for the controls panel to prevent layout overlap
+  const maxMobileBoardH = vh - 260;
+  const mobileCellSize = Math.floor(Math.max(10, Math.min((vw - 8) / 10, maxMobileBoardH / 20)));
+  const mobilePanelH = Math.max(250, vh - mobileCellSize * 20 - 16);
 
   const isTabletPortrait = layoutMode === "tablet-portrait";
   const isTabletLandscape = layoutMode === "tablet-landscape";
