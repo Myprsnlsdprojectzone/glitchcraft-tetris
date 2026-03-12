@@ -35,7 +35,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="GlitchCraft — Neon Block Puzzle Game" />
-  <meta name="twitter:description" content="Free block puzzle game with combos, haptics, and stunning visuals. Play now!" />
+  <meta name="twitter:description"
+    content="Free block puzzle game with combos, haptics, and stunning visuals. Play now!" />
   <meta name="twitter:image" content="/og-image.png" />
 
   <!-- Fonts: Inter + JetBrains Mono -->
@@ -44,15 +45,14 @@
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" />
 
-  <!-- Google AdSense — Publisher ID: YOUR_ADSENSE_ID -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=%VITE_ADSENSE_ID%"
-    crossorigin="anonymous"></script>
+  <!-- Google AdSense — Publisher ID: ca-pub-4841994000764046 -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4841994000764046" crossorigin="anonymous"></script>
 
   <!-- Google Analytics 4 — Measurement ID configured via VITE_GA_ID env variable -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GA_ID%"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', '%VITE_GA_ID%', {
       page_path: window.location.pathname,
@@ -60,7 +60,6 @@
       cookie_flags: 'SameSite=None;Secure'
     });
   </script>
-
 
   <style>
     /* ── Critical inline CSS — eliminates FOUC completely ── */

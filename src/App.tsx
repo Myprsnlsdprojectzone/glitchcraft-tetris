@@ -8,6 +8,7 @@ import { isBgmEnabled, toggleBGM, startBGM, stopBGM } from "./hooks/useBGM";
 import { getScores, addScore, ScoreEntry } from "./utils/scoreHistory";
 import { submitGlobalScore } from "./utils/globalLeaderboard";
 import { THEMES, nextThemeId, ThemeConfig } from "./utils/themes";
+import { BigLogo } from "./components/Logo";
 import { useAchievements } from "./hooks/useAchievements";
 import { AchievementToast } from "./components/AchievementToast";
 import { Board } from "./components/Board";
@@ -754,39 +755,7 @@ function OverlayBtn({ children, onClick, variant, padV, padH, fontSize, minW }: 
 }
 
 function LogoIcon({ size }: { size: number }) {
-  return (
-    <div style={{ position: "relative", display: "inline-flex", marginBottom: size * 0.18 }}>
-      {/* Ripple ring */}
-      <div style={{
-        position: "absolute", inset: -size * 0.12,
-        borderRadius: size * 0.36,
-        border: "1.5px solid rgba(99,102,241,0.28)",
-        animation: "statRipple 2.8s ease-out infinite",
-        pointerEvents: "none",
-      }} />
-      {/* Icon image */}
-      <img
-        src="/icon.png"
-        alt="GlitchCraft Icon"
-        draggable={false}
-        style={{
-          width: size, height: size,
-          borderRadius: size * 0.26,
-          objectFit: "cover",
-          display: "block",
-          boxShadow: [
-            "0 14px 48px rgba(99,102,241,0.65)",
-            "0 0 0 1px rgba(255,255,255,0.16)",
-            "inset 0 1.5px 0 rgba(255,255,255,0.28)",
-          ].join(", "),
-          animation: "logoGlow 3.2s ease-in-out infinite",
-          userSelect: "none",
-          WebkitUserSelect: "none",
-          flexShrink: 0,
-        }}
-      />
-    </div>
-  );
+  return <BigLogo size={size} isDark={true} />;
 }
 
 

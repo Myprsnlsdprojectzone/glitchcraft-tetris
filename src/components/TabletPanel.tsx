@@ -7,6 +7,7 @@ import {
   hapticSoftDrop, hapticHold,
   hapticStart, hapticPause, hapticResume,
 } from "../hooks/useHaptics";
+import { Logo } from "./Logo";
 
 interface Props {
   score:      number;
@@ -365,19 +366,7 @@ export const TabletPanel: React.FC<Props> = ({
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <img
-            src="/logo.png"
-            alt="GlitchCraft"
-            draggable={false}
-            style={{
-              height: 28,
-              objectFit: "contain",
-              filter: "drop-shadow(0 0 8px rgba(99,102,241,0.65)) drop-shadow(0 0 3px rgba(34,211,238,0.4))",
-              animation: "logoGlow 3s ease-in-out infinite",
-              userSelect: "none",
-              WebkitUserSelect: "none",
-            }}
-          />
+          <Logo isDark={isDark} size={28} />
         </div>
         <button onClick={onToggleTheme} className="theme-toggle-btn" style={{
           background: card, border: `1.5px solid ${border}`,

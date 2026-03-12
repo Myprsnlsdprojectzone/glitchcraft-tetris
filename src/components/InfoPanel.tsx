@@ -6,6 +6,7 @@ import { ScoreHistory } from "./ScoreHistory";
 import { ScoreEntry } from "../utils/scoreHistory";
 import { ThemeConfig } from "../utils/themes";
 import { AchievementState } from "../utils/achievements";
+import { Logo } from "./Logo";
 
 interface Props {
   score:      number;
@@ -131,19 +132,7 @@ export const InfoPanel: React.FC<Props> = ({
         flexShrink: 0, marginBottom: 16,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-          <img
-            src="/logo.png"
-            alt="GlitchCraft"
-            draggable={false}
-            style={{
-              height: 34,
-              objectFit: "contain",
-              filter: "drop-shadow(0 0 10px rgba(99,102,241,0.65)) drop-shadow(0 0 4px rgba(34,211,238,0.4))",
-              animation: "logoGlow 3s ease-in-out infinite",
-              userSelect: "none",
-              WebkitUserSelect: "none",
-            }}
-          />
+          <Logo isDark={isDark} size={34} />
         </div>
         <button
           onClick={onToggleTheme}
